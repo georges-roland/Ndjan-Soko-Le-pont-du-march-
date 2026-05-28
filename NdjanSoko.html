@@ -1,0 +1,1356 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<title>Ndjan-Soko</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Sora:wght@400;600;700&display=swap');
+
+  :root {
+    --green: #1a7a4a;
+    --green-light: #2ecc71;
+    --green-pale: #e8f5ee;
+    --orange: #e67e22;
+    --orange-light: #f39c12;
+    --orange-pale: #fef5e7;
+    --earth: #8b4513;
+    --sky: #2980b9;
+    --bg: #f0f4f0;
+    --white: #ffffff;
+    --text: #1a2e1a;
+    --text-light: #5a7a5a;
+    --border: #d4e6d4;
+    --shadow: 0 2px 12px rgba(26,122,74,0.10);
+    --shadow-md: 0 4px 24px rgba(26,122,74,0.14);
+    --radius: 16px;
+    --radius-sm: 10px;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+  }
+
+  /* PHONE SHELL */
+  .phone-shell {
+    width: 390px;
+    min-height: 844px;
+    background: var(--white);
+    border-radius: 44px;
+    overflow: hidden;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.25), 0 0 0 8px #1a1a1a;
+    margin: 30px auto;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+
+  /* STATUS BAR */
+  .status-bar {
+    background: var(--green);
+    padding: 12px 24px 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  /* SCREENS */
+  .screen { display:none; flex-direction:column; flex:1; overflow:hidden; }
+  .screen.active { display:flex; }
+
+  /* SPLASH */
+  .splash {
+    background: linear-gradient(160deg, #0d4a2a 0%, #1a7a4a 50%, #2ecc71 100%);
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    padding: 60px 40px;
+  }
+  .splash-logo {
+    font-family: 'Sora', sans-serif;
+    font-size: 48px;
+    font-weight: 700;
+    color: white;
+    letter-spacing: -2px;
+  }
+  .splash-tagline {
+    color: rgba(255,255,255,0.85);
+    font-size: 15px;
+    text-align: center;
+    line-height: 1.6;
+  }
+  .splash-icon {
+    font-size: 80px;
+    animation: bounce 2s infinite;
+  }
+  @keyframes bounce {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
+  }
+  .btn-primary {
+    background: white;
+    color: var(--green);
+    border: none;
+    border-radius: 50px;
+    padding: 16px 40px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    width: 100%;
+    transition: all 0.2s;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
+  .btn-outline {
+    background: transparent;
+    color: white;
+    border: 2px solid rgba(255,255,255,0.6);
+    border-radius: 50px;
+    padding: 14px 40px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+
+  /* AUTH */
+  .auth-header {
+    background: var(--green);
+    padding: 40px 24px 60px;
+    color: white;
+  }
+  .auth-header h1 { font-family:'Sora',sans-serif; font-size:28px; font-weight:700; }
+  .auth-header p { opacity:0.85; margin-top:6px; font-size:14px; }
+  .auth-body {
+    background: white;
+    border-radius: 28px 28px 0 0;
+    margin-top: -28px;
+    padding: 32px 24px;
+    flex: 1;
+    overflow-y: auto;
+  }
+  .form-group { margin-bottom: 16px; }
+  .form-label { font-size:13px; font-weight:600; color:var(--text-light); margin-bottom:6px; display:block; }
+  .form-input {
+    width: 100%;
+    border: 2px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 14px 16px;
+    font-size: 15px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    outline: none;
+    transition: border-color 0.2s;
+    color: var(--text);
+  }
+  .form-input:focus { border-color: var(--green); }
+  .role-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin-bottom:20px; }
+  .role-card {
+    border: 2px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 14px 8px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: white;
+  }
+  .role-card.selected { border-color: var(--green); background: var(--green-pale); }
+  .role-card .emoji { font-size: 28px; display:block; margin-bottom:6px; }
+  .role-card .label { font-size: 12px; font-weight: 600; color: var(--text-light); }
+  .role-card.selected .label { color: var(--green); }
+  .btn-green {
+    background: var(--green);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    padding: 16px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    width: 100%;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    transition: all 0.2s;
+  }
+  .btn-green:hover { background: #145c36; }
+  .link-btn { background:none; border:none; color:var(--green); font-weight:600; cursor:pointer; font-size:14px; font-family:'Plus Jakarta Sans',sans-serif; }
+
+  /* BOTTOM NAV */
+  .bottom-nav {
+    display: flex;
+    background: white;
+    border-top: 1px solid var(--border);
+    padding: 8px 0 16px;
+  }
+  .nav-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: none;
+    border: none;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+  .nav-icon { font-size: 22px; }
+  .nav-label { font-size: 10px; font-weight: 600; color: #999; }
+  .nav-item.active .nav-label { color: var(--green); }
+  .nav-item.active .nav-icon { transform: scale(1.15); }
+
+  /* MAIN CONTENT */
+  .main-content { flex:1; overflow-y:auto; padding-bottom:20px; }
+
+  /* HOME */
+  .home-header {
+    background: linear-gradient(135deg, var(--green) 0%, #2a9d5a 100%);
+    padding: 24px 20px 40px;
+    color: white;
+  }
+  .home-greeting { font-size:13px; opacity:0.85; }
+  .home-name { font-family:'Sora',sans-serif; font-size:24px; font-weight:700; margin-top:2px; }
+  .home-role-badge {
+    display:inline-flex; align-items:center; gap:6px;
+    background:rgba(255,255,255,0.2); border-radius:20px;
+    padding:4px 12px; font-size:12px; font-weight:600; margin-top:8px;
+  }
+  .stats-row {
+    display:grid; grid-template-columns:1fr 1fr 1fr;
+    gap:8px; margin-top:16px;
+  }
+  .stat-card {
+    background:rgba(255,255,255,0.15);
+    border-radius:14px; padding:14px 10px; text-align:center;
+  }
+  .stat-num { font-size:22px; font-weight:800; }
+  .stat-label { font-size:10px; opacity:0.85; margin-top:2px; }
+
+  .section-card {
+    background: white;
+    border-radius: 20px 20px 0 0;
+    margin-top: -20px;
+    padding: 24px 20px;
+    min-height: 300px;
+  }
+  .section-title {
+    font-family:'Sora',sans-serif;
+    font-size:17px; font-weight:700; margin-bottom:16px;
+    display:flex; justify-content:space-between; align-items:center;
+  }
+  .see-all { font-size:13px; color:var(--green); font-weight:600; cursor:pointer; background:none; border:none; font-family:'Plus Jakarta Sans',sans-serif; }
+
+  /* CARDS */
+  .offre-card {
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+  }
+  .offre-card:hover { border-color:var(--green); box-shadow:var(--shadow); }
+  .offre-card-top { display:flex; justify-content:space-between; align-items:flex-start; }
+  .offre-product { font-weight:700; font-size:16px; }
+  .offre-qty { font-size:13px; color:var(--text-light); margin-top:2px; }
+  .badge {
+    padding:4px 10px; border-radius:20px; font-size:11px; font-weight:700;
+    display:inline-block;
+  }
+  .badge-green { background:var(--green-pale); color:var(--green); }
+  .badge-orange { background:var(--orange-pale); color:var(--orange); }
+  .badge-blue { background:#e8f4fd; color:var(--sky); }
+  .badge-red { background:#fde8e8; color:#c0392b; }
+  .offre-route {
+    display:flex; align-items:center; gap:8px; margin-top:12px;
+    font-size:13px; color:var(--text-light);
+  }
+  .route-arrow { color:var(--green); font-weight:700; }
+  .offre-footer {
+    display:flex; justify-content:space-between; align-items:center;
+    margin-top:12px; padding-top:12px; border-top:1px solid var(--border);
+  }
+  .price { font-weight:700; color:var(--green); font-size:16px; }
+  .date-small { font-size:12px; color:var(--text-light); }
+  .urgent-tag {
+    position:absolute; top:12px; right:12px;
+    background:#e74c3c; color:white;
+    font-size:10px; font-weight:800; padding:3px 8px; border-radius:10px;
+  }
+
+  /* DETAIL */
+  .detail-header {
+    background: var(--green);
+    padding: 20px 20px 40px;
+    color: white;
+  }
+  .back-btn { background:rgba(255,255,255,0.2); border:none; color:white; border-radius:50%; width:36px; height:36px; font-size:18px; cursor:pointer; margin-bottom:16px; display:flex; align-items:center; justify-content:center; }
+  .detail-title { font-family:'Sora',sans-serif; font-size:22px; font-weight:700; }
+  .detail-subtitle { opacity:0.85; margin-top:4px; font-size:14px; }
+
+  .detail-body {
+    background:white; border-radius:24px 24px 0 0; margin-top:-20px; padding:24px 20px; flex:1; overflow-y:auto;
+  }
+  .info-row {
+    display:flex; align-items:center; gap:12px; padding:14px 0; border-bottom:1px solid var(--border);
+  }
+  .info-icon { font-size:20px; width:32px; text-align:center; }
+  .info-label { font-size:12px; color:var(--text-light); font-weight:600; }
+  .info-value { font-size:15px; font-weight:600; }
+
+  /* OPTIONS LOGISTIQUES */
+  .option-card {
+    border: 2px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    margin-bottom:12px;
+    cursor:pointer;
+    transition:all 0.2s;
+  }
+  .option-card:hover, .option-card.selected { border-color:var(--green); background:var(--green-pale); }
+  .option-header { display:flex; align-items:center; gap:10px; margin-bottom:8px; }
+  .option-icon { font-size:28px; }
+  .option-title { font-weight:700; font-size:15px; }
+  .option-desc { font-size:13px; color:var(--text-light); line-height:1.5; }
+  .option-count { font-size:12px; font-weight:700; color:var(--green); }
+
+  /* FORM PAGE */
+  .form-page { flex:1; overflow-y:auto; }
+  .form-header {
+    background:var(--green); padding:20px 20px 40px; color:white;
+  }
+  .form-header h2 { font-family:'Sora',sans-serif; font-size:22px; font-weight:700; }
+  .form-body { background:white; border-radius:24px 24px 0 0; margin-top:-20px; padding:24px 20px; }
+
+  /* CHAT / NEGOCIATION */
+  .chat-bubble {
+    max-width:75%; padding:12px 16px; border-radius:18px; margin-bottom:10px; font-size:14px; line-height:1.5;
+  }
+  .chat-mine { background:var(--green); color:white; border-bottom-right-radius:4px; align-self:flex-end; }
+  .chat-other { background:#f0f0f0; color:var(--text); border-bottom-left-radius:4px; align-self:flex-start; }
+  .chat-time { font-size:10px; opacity:0.7; margin-top:4px; }
+  .chat-messages { flex:1; overflow-y:auto; padding:16px; display:flex; flex-direction:column; }
+  .chat-input-bar { display:flex; gap:8px; padding:12px 16px; border-top:1px solid var(--border); background:white; }
+  .chat-input { flex:1; border:2px solid var(--border); border-radius:24px; padding:10px 16px; font-size:14px; outline:none; font-family:'Plus Jakarta Sans',sans-serif; }
+  .chat-send { background:var(--green); border:none; border-radius:50%; width:40px; height:40px; color:white; font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+
+  /* PAIEMENT */
+  .payment-method {
+    border:2px solid var(--border); border-radius:var(--radius); padding:16px 20px;
+    display:flex; align-items:center; gap:16px; cursor:pointer; margin-bottom:12px; transition:all 0.2s;
+  }
+  .payment-method.selected { border-color:var(--green); background:var(--green-pale); }
+  .pay-logo { width:48px; height:48px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:22px; font-weight:800; }
+  .mtn-logo { background:#ffcc00; color:#333; }
+  .orange-logo { background:#ff6600; color:white; }
+  .pay-info h4 { font-weight:700; font-size:15px; }
+  .pay-info p { font-size:12px; color:var(--text-light); margin-top:2px; }
+  .escrow-box {
+    background:var(--green-pale); border:1.5px solid var(--border); border-radius:var(--radius); padding:16px;
+    margin:16px 0;
+  }
+  .escrow-title { font-weight:700; color:var(--green); font-size:14px; margin-bottom:6px; }
+  .escrow-desc { font-size:12px; color:var(--text-light); line-height:1.6; }
+
+  /* SUCCESS */
+  .success-screen {
+    flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    padding:40px 24px; text-align:center; background:white;
+  }
+  .success-icon { font-size:80px; animation:pulse 1s ease; }
+  @keyframes pulse { 0%{transform:scale(0)} 70%{transform:scale(1.1)} 100%{transform:scale(1)} }
+  .success-title { font-family:'Sora',sans-serif; font-size:24px; font-weight:700; margin-top:20px; color:var(--green); }
+  .success-desc { color:var(--text-light); margin-top:10px; line-height:1.6; }
+  .code-box {
+    background:var(--green); color:white; border-radius:var(--radius); padding:20px 40px;
+    margin:24px 0; font-family:'Sora',sans-serif; font-size:36px; font-weight:800; letter-spacing:8px;
+  }
+
+  /* PROFIL */
+  .profil-header {
+    background:linear-gradient(135deg, #8b4513 0%, var(--orange) 100%);
+    padding:40px 24px 60px; color:white; text-align:center;
+  }
+  .avatar {
+    width:80px; height:80px; border-radius:50%;
+    background:rgba(255,255,255,0.3); display:flex; align-items:center; justify-content:center;
+    font-size:36px; margin:0 auto 12px; border:3px solid rgba(255,255,255,0.5);
+  }
+  .stars { color:#f39c12; font-size:16px; }
+  .profil-body { background:white; border-radius:28px 28px 0 0; margin-top:-28px; padding:28px 20px; }
+  .profil-stat { display:flex; justify-content:space-around; margin-bottom:24px; }
+  .ps-item { text-align:center; }
+  .ps-num { font-family:'Sora',sans-serif; font-size:24px; font-weight:800; color:var(--green); }
+  .ps-label { font-size:11px; color:var(--text-light); margin-top:2px; }
+  .menu-item {
+    display:flex; align-items:center; gap:14px; padding:16px 0; border-bottom:1px solid var(--border); cursor:pointer;
+  }
+  .menu-icon { font-size:22px; width:36px; text-align:center; }
+  .menu-label { font-weight:600; font-size:15px; flex:1; }
+  .menu-arrow { color:#ccc; }
+  .logout-btn {
+    background:none; border:2px solid #e74c3c; color:#e74c3c; border-radius:50px;
+    padding:14px; width:100%; font-size:15px; font-weight:700; cursor:pointer; margin-top:24px;
+    font-family:'Plus Jakarta Sans',sans-serif;
+  }
+
+  /* LOADING */
+  .loading { text-align:center; padding:40px; color:var(--text-light); }
+  .spinner { display:inline-block; width:32px; height:32px; border:3px solid var(--border); border-top-color:var(--green); border-radius:50%; animation:spin 0.8s linear infinite; margin-bottom:12px; }
+  @keyframes spin { to { transform:rotate(360deg); } }
+
+  /* EMPTY */
+  .empty { text-align:center; padding:60px 24px; }
+  .empty-icon { font-size:56px; margin-bottom:12px; }
+  .empty-title { font-weight:700; font-size:18px; }
+  .empty-desc { color:var(--text-light); margin-top:6px; font-size:14px; }
+
+  /* SELECT */
+  select.form-input { appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%235a7a5a' stroke-width='2' fill='none'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 14px center; }
+
+  .toast {
+    position:fixed; bottom:100px; left:50%; transform:translateX(-50%);
+    background:#333; color:white; padding:12px 24px; border-radius:50px;
+    font-size:14px; font-weight:600; z-index:999; opacity:0; transition:opacity 0.3s;
+    pointer-events:none;
+  }
+  .toast.show { opacity:1; }
+
+  .tab-pills { display:flex; gap:8px; margin-bottom:16px; overflow-x:auto; padding-bottom:4px; }
+  .tab-pill { padding:8px 16px; border-radius:20px; border:2px solid var(--border); font-size:13px; font-weight:600; cursor:pointer; white-space:nowrap; background:white; color:var(--text-light); font-family:'Plus Jakarta Sans',sans-serif; }
+  .tab-pill.active { background:var(--green); color:white; border-color:var(--green); }
+</style>
+</head>
+<body>
+<div class="phone-shell">
+  <div class="status-bar">
+    <span>9:41</span>
+    <span>📶 🔋</span>
+  </div>
+
+  <!-- SPLASH -->
+  <div class="screen active" id="screen-splash" style="background:linear-gradient(160deg,#0d4a2a,#1a7a4a,#2ecc71);justify-content:center;align-items:center;gap:20px;padding:60px 32px;">
+    <div class="splash-icon">🌾</div>
+    <div style="text-align:center;">
+      <div style="font-family:'Sora',sans-serif;font-size:48px;font-weight:800;color:white;letter-spacing:-2px;">Ndjan-Soko</div>
+      <div style="color:rgba(255,255,255,0.85);font-size:14px;margin-top:8px;line-height:1.6;">La place de marché logistique<br>agropastorale du Cameroun</div>
+    </div>
+    <div style="width:100%;display:flex;flex-direction:column;gap:12px;margin-top:20px;">
+      <button class="btn-primary" onclick="showScreen('screen-register')">Créer mon compte</button>
+      <button class="btn-outline" onclick="showScreen('screen-login')">J'ai déjà un compte</button>
+    </div>
+    <div style="color:rgba(255,255,255,0.5);font-size:12px;margin-top:8px;">Fonctionne hors ligne · Mobile Money · USSD</div>
+  </div>
+
+  <!-- REGISTER -->
+  <div class="screen" id="screen-register">
+    <div class="auth-header">
+      <button class="back-btn" onclick="showScreen('screen-splash')" style="background:rgba(255,255,255,0.2);border:none;color:white;border-radius:50%;width:36px;height:36px;font-size:18px;cursor:pointer;margin-bottom:12px;">←</button>
+      <h1>Créer un compte</h1>
+      <p>Rejoignez la plateforme agropastorale</p>
+    </div>
+    <div class="auth-body">
+      <div style="margin-bottom:20px;">
+        <div class="form-label">Je suis...</div>
+        <div class="role-grid">
+          <div class="role-card" id="role-AGRICULTEUR" onclick="selectRole('AGRICULTEUR')">
+            <span class="emoji">👨‍🌾</span>
+            <div class="label">Agriculteur</div>
+          </div>
+          <div class="role-card" id="role-TRANSPORTEUR" onclick="selectRole('TRANSPORTEUR')">
+            <span class="emoji">🚛</span>
+            <div class="label">Transporteur</div>
+          </div>
+          <div class="role-card" id="role-COMMERCANT" onclick="selectRole('COMMERCANT')">
+            <span class="emoji">🏪</span>
+            <div class="label">Commerçant</div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Nom complet</label>
+        <input class="form-input" id="reg-nom" placeholder="Ex: Jean Mballa" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Numéro de téléphone</label>
+        <input class="form-input" id="reg-tel" placeholder="+237 6XX XXX XXX" type="tel" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Localisation</label>
+        <input class="form-input" id="reg-loc" placeholder="Ex: Obala, Centre" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Axe routier principal</label>
+        <select class="form-input" id="reg-axe">
+          <option value="">Sélectionner...</option>
+          <option>Yaoundé - Bafoussam</option>
+          <option>Yaoundé - Douala</option>
+          <option>Yaoundé - Obala</option>
+          <option>Yaoundé - Mbalmayo</option>
+          <option>Bafoussam - Bamenda</option>
+          <option>Douala - Buea</option>
+          <option>Ngaoundéré - Yaoundé</option>
+          <option>Bertoua - Yaoundé</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Mot de passe</label>
+        <input class="form-input" id="reg-pwd" placeholder="Minimum 6 caractères" type="password" />
+      </div>
+      <button class="btn-green" onclick="doRegister()" style="margin-top:8px;">S'inscrire</button>
+      <div style="text-align:center;margin-top:16px;font-size:14px;color:var(--text-light);">
+        Déjà un compte ? <button class="link-btn" onclick="showScreen('screen-login')">Se connecter</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOGIN -->
+  <div class="screen" id="screen-login">
+    <div class="auth-header">
+      <button class="back-btn" onclick="showScreen('screen-splash')" style="background:rgba(255,255,255,0.2);border:none;color:white;border-radius:50%;width:36px;height:36px;font-size:18px;cursor:pointer;margin-bottom:12px;">←</button>
+      <h1>Se connecter</h1>
+      <p>Bienvenue sur Ndjan-Soko</p>
+    </div>
+    <div class="auth-body">
+      <div style="background:var(--green-pale);border-radius:12px;padding:14px;margin-bottom:20px;font-size:13px;color:var(--text-light);">
+        <strong style="color:var(--green);">Comptes de démo :</strong><br>
+        👨‍🌾 Agriculteur: 677001001 / pass123<br>
+        🚛 Transporteur: 699002002 / pass123<br>
+        🏪 Commerçant: 655003003 / pass123
+      </div>
+      <div class="form-group">
+        <label class="form-label">Numéro de téléphone</label>
+        <input class="form-input" id="login-tel" placeholder="+237 6XX XXX XXX" value="677001001" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Mot de passe</label>
+        <input class="form-input" id="login-pwd" placeholder="Votre mot de passe" type="password" value="pass123" />
+      </div>
+      <button class="btn-green" onclick="doLogin()" style="margin-top:8px;">Se connecter</button>
+      <div style="text-align:center;margin-top:16px;font-size:14px;color:var(--text-light);">
+        Pas encore inscrit ? <button class="link-btn" onclick="showScreen('screen-register')">Créer un compte</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN APP -->
+  <div class="screen" id="screen-app" style="flex-direction:column;">
+    <!-- TAB CONTENTS -->
+    <div class="main-content" id="tab-content">
+      <!-- Injected by JS -->
+    </div>
+    <!-- BOTTOM NAV -->
+    <div class="bottom-nav">
+      <button class="nav-item active" id="nav-home" onclick="switchTab('home')">
+        <span class="nav-icon">🏠</span>
+        <span class="nav-label">Accueil</span>
+      </button>
+      <button class="nav-item" id="nav-offres" onclick="switchTab('offres')">
+        <span class="nav-icon">📦</span>
+        <span class="nav-label">Offres</span>
+      </button>
+      <button class="nav-item" id="nav-trajets" onclick="switchTab('trajets')">
+        <span class="nav-icon">🚛</span>
+        <span class="nav-label">Trajets</span>
+      </button>
+      <button class="nav-item" id="nav-matchings" onclick="switchTab('matchings')">
+        <span class="nav-icon">🤝</span>
+        <span class="nav-label">Deals</span>
+      </button>
+      <button class="nav-item" id="nav-profil" onclick="switchTab('profil')">
+        <span class="nav-icon">👤</span>
+        <span class="nav-label">Profil</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- DETAIL SCREENS (overlays) -->
+  <div class="screen" id="screen-offre-detail">
+    <div class="detail-header">
+      <button class="back-btn" onclick="goBack()">←</button>
+      <div id="detail-product-name" class="detail-title">Chargement...</div>
+      <div id="detail-product-sub" class="detail-subtitle"></div>
+    </div>
+    <div class="detail-body">
+      <div id="detail-content"></div>
+      <div id="detail-options"></div>
+      <div id="detail-actions" style="margin-top:20px;"></div>
+    </div>
+  </div>
+
+  <div class="screen" id="screen-new-offre">
+    <div class="form-header">
+      <button class="back-btn" onclick="goBack()">←</button>
+      <h2>Publier une offre</h2>
+      <p style="opacity:0.85;font-size:13px;margin-top:4px;">Proposez vos produits à transporter</p>
+    </div>
+    <div class="form-page">
+      <div class="form-body">
+        <div class="form-group">
+          <label class="form-label">Type de produit</label>
+          <select class="form-input" id="new-type">
+            <option value="">Sélectionner...</option>
+            <option>Maïs</option><option>Manioc</option><option>Plantain</option>
+            <option>Tomates</option><option>Oignons</option><option>Cacao</option>
+            <option>Café</option><option>Arachides</option><option>Ignames</option>
+            <option>Poulets vivants</option><option>Poisson fumé</option><option>Autres</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Quantité (kg)</label>
+          <input class="form-input" id="new-qty" type="number" placeholder="Ex: 500" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Ville de départ</label>
+          <select class="form-input" id="new-depart">
+            <option value="">Sélectionner...</option>
+            <option>Obala</option><option>Bafia</option><option>Mbalmayo</option>
+            <option>Bafoussam</option><option>Foumban</option><option>Bertoua</option>
+            <option>Ngaoundéré</option><option>Maroua</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Ville d'arrivée</label>
+          <select class="form-input" id="new-arrivee">
+            <option value="">Sélectionner...</option>
+            <option>Yaoundé</option><option>Douala</option><option>Bafoussam</option>
+            <option>Bamenda</option><option>Garoua</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Date de disponibilité</label>
+          <input class="form-input" id="new-date" type="date" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Prix souhaité (FCFA) — optionnel</label>
+          <input class="form-input" id="new-prix" type="number" placeholder="Ex: 25000" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Description</label>
+          <textarea class="form-input" id="new-desc" rows="3" placeholder="Détails sur le produit, conditionnement..." style="resize:none;"></textarea>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;">
+          <input type="checkbox" id="new-urgent" style="width:18px;height:18px;accent-color:var(--green);" />
+          <label for="new-urgent" style="font-size:14px;font-weight:600;">🔴 Offre urgente</label>
+        </div>
+        <button class="btn-green" onclick="publishOffre()">Publier l'offre</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="screen" id="screen-new-trajet">
+    <div class="form-header">
+      <button class="back-btn" onclick="goBack()">←</button>
+      <h2>Publier un trajet</h2>
+      <p style="opacity:0.85;font-size:13px;margin-top:4px;">Proposez votre espace de chargement</p>
+    </div>
+    <div class="form-page">
+      <div class="form-body">
+        <div class="form-group">
+          <label class="form-label">Ville de départ</label>
+          <select class="form-input" id="t-depart">
+            <option>Obala</option><option>Bafia</option><option>Bafoussam</option>
+            <option>Bertoua</option><option>Ngaoundéré</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Ville d'arrivée</label>
+          <select class="form-input" id="t-arrivee">
+            <option>Yaoundé</option><option>Douala</option><option>Bafoussam</option>
+            <option>Bamenda</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Date de départ</label>
+          <input class="form-input" id="t-date" type="date" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Type de camion</label>
+          <select class="form-input" id="t-camion">
+            <option>Camion 5T</option><option>Camion 10T</option>
+            <option>Camion 20T</option><option>Camionnette</option><option>Moto-taxi cargo</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Capacité disponible (kg)</label>
+          <input class="form-input" id="t-cap" type="number" placeholder="Ex: 3000" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Prix par kg (FCFA)</label>
+          <input class="form-input" id="t-prix" type="number" placeholder="Ex: 50" />
+        </div>
+        <button class="btn-green" onclick="publishTrajet()">Publier le trajet</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="screen" id="screen-paiement" style="flex-direction:column;">
+    <div style="background:var(--green);padding:20px 20px 40px;color:white;">
+      <button class="back-btn" onclick="goBack()">←</button>
+      <div style="font-family:'Sora',sans-serif;font-size:22px;font-weight:700;">Paiement sécurisé</div>
+      <div style="opacity:0.85;margin-top:4px;font-size:13px;">Acompte de 30% via Mobile Money</div>
+    </div>
+    <div style="background:white;border-radius:24px 24px 0 0;margin-top:-20px;padding:24px 20px;flex:1;overflow-y:auto;">
+      <div id="paiement-detail" style="margin-bottom:20px;"></div>
+      <div class="form-label" style="margin-bottom:12px;">Choisissez votre opérateur</div>
+      <div class="payment-method selected" id="pay-momo" onclick="selectPayment('MTN_MOMO')">
+        <div class="pay-logo mtn-logo">MTN</div>
+        <div class="pay-info">
+          <h4>MTN Mobile Money</h4>
+          <p>Paiement instantané MoMo</p>
+        </div>
+        <span>✓</span>
+      </div>
+      <div class="payment-method" id="pay-orange" onclick="selectPayment('ORANGE_MONEY')">
+        <div class="pay-logo orange-logo">OM</div>
+        <div class="pay-info">
+          <h4>Orange Money</h4>
+          <p>Paiement Orange Money</p>
+        </div>
+      </div>
+      <div class="escrow-box">
+        <div class="escrow-title">🔒 Compte séquestre Ndjan-Soko</div>
+        <div class="escrow-desc">Votre acompte est bloqué en sécurité et libéré au transporteur uniquement après confirmation de livraison par le code secret.</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Numéro Mobile Money</label>
+        <input class="form-input" id="pay-tel" placeholder="+237 6XX XXX XXX" />
+      </div>
+      <button class="btn-green" onclick="doPayment()">Payer l'acompte</button>
+    </div>
+  </div>
+
+  <div class="screen" id="screen-success">
+    <div class="success-screen">
+      <div class="success-icon">✅</div>
+      <div class="success-title" id="success-title">Paiement confirmé !</div>
+      <div class="success-desc" id="success-desc">Votre acompte a été enregistré en sécurité.</div>
+      <div class="code-box" id="success-code">---</div>
+      <div style="font-size:13px;color:var(--text-light);margin-bottom:24px;">Ce code secret confirme la livraison</div>
+      <button class="btn-green" onclick="switchTab('matchings'); showScreen('screen-app');">Voir mes deals</button>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ======== STATE ========
+const STATE = {
+  user: null,
+  selectedRole: null,
+  currentTab: 'home',
+  selectedPayment: 'MTN_MOMO',
+  currentMatchingId: null,
+  screenHistory: [],
+
+  offres: [
+    { id:1, typeProduit:'Maïs', quantiteKg:800, description:'Maïs sec de bonne qualité, ensaché', villeDepart:'Obala', villeArrivee:'Yaoundé', dateDisponibilite:'2026-06-05', prixDemande:32000, statut:'DISPONIBLE', typeLogistique:'CAMION_PASSAGE', urgent:false, agriculteurNom:'Jean Mballa', agriculteurTelephone:'677001001', agriculteurNote:4.7 },
+    { id:2, typeProduit:'Plantain', quantiteKg:500, description:'Régimes de plantain bien mûrs', villeDepart:'Bafia', villeArrivee:'Yaoundé', dateDisponibilite:'2026-06-03', prixDemande:20000, statut:'DISPONIBLE', typeLogistique:'CAMION_PASSAGE', urgent:true, agriculteurNom:'Marie Atangana', agriculteurTelephone:'677002002', agriculteurNote:4.9 },
+    { id:3, typeProduit:'Cacao', quantiteKg:2000, description:'Cacao fermenté et séché, prêt pour export', villeDepart:'Bafoussam', villeArrivee:'Douala', dateDisponibilite:'2026-06-10', prixDemande:280000, statut:'DISPONIBLE', typeLogistique:'DEPOT_HUB', urgent:false, agriculteurNom:'Paul Nkengue', agriculteurTelephone:'677003003', agriculteurNote:4.5 },
+    { id:4, typeProduit:'Tomates', quantiteKg:300, description:'Tomates fraîches à écouler rapidement', villeDepart:'Bafia', villeArrivee:'Yaoundé', dateDisponibilite:'2026-06-01', prixDemande:18000, statut:'EN_COURS', typeLogistique:'CAMION_PASSAGE', urgent:true, agriculteurNom:'Jeanne Fouda', agriculteurTelephone:'677004004', agriculteurNote:4.3 },
+    { id:5, typeProduit:'Manioc', quantiteKg:1200, description:'Tubercules de manioc, variété amère', villeDepart:'Mbalmayo', villeArrivee:'Yaoundé', dateDisponibilite:'2026-06-08', prixDemande:36000, statut:'DISPONIBLE', typeLogistique:'CAMION_PASSAGE', urgent:false, agriculteurNom:'Henri Biya', agriculteurTelephone:'677005005', agriculteurNote:4.6 },
+  ],
+
+  trajets: [
+    { id:1, villeDepart:'Obala', villeArrivee:'Yaoundé', axeRoitier:'Yaoundé-Obala', dateDepart:'2026-06-05T06:00', capaciteDisponibleKg:3000, typeCamion:'Camion 10T', prixParKg:40, statut:'PLANIFIE', transporteurNom:'Roger Tchoukou', transporteurTelephone:'699002002', transporteurNote:4.8 },
+    { id:2, villeDepart:'Bafoussam', villeArrivee:'Douala', axeRoitier:'Bafoussam-Douala', dateDepart:'2026-06-07T05:30', capaciteDisponibleKg:8000, typeCamion:'Camion 20T', prixParKg:35, statut:'PLANIFIE', transporteurNom:'Samuel Kamga', transporteurTelephone:'699003003', transporteurNote:4.6 },
+    { id:3, villeDepart:'Ngaoundéré', villeArrivee:'Yaoundé', axeRoitier:'Ngaoundéré-Yaoundé', dateDepart:'2026-06-09T04:00', capaciteDisponibleKg:5000, typeCamion:'Camion 10T', prixParKg:55, statut:'PLANIFIE', transporteurNom:'Ibrahim Abdou', transporteurTelephone:'699004004', transporteurNote:4.4 },
+    { id:4, villeDepart:'Bafia', villeArrivee:'Yaoundé', axeRoitier:'Bafia-Yaoundé', dateDepart:'2026-06-04T07:00', capaciteDisponibleKg:2000, typeCamion:'Camion 5T', prixParKg:45, statut:'PLANIFIE', transporteurNom:'Pierre Owona', transporteurTelephone:'699005005', transporteurNote:4.7 },
+  ],
+
+  matchings: [
+    { id:1, offreId:4, typeProduit:'Tomates', quantiteKg:300, villeDepart:'Bafia', villeArrivee:'Yaoundé', statut:'PAIEMENT_ACOMPTE', prixNegocieTotal:13500, acompteVerse:4050, codeConfirmation:'847291', agriculteurNom:'Jeanne Fouda', transporteurNom:'Roger Tchoukou', createdAt:'2026-05-25' },
+    { id:2, offreId:1, typeProduit:'Maïs', quantiteKg:800, villeDepart:'Obala', villeArrivee:'Yaoundé', statut:'EN_ATTENTE', prixNegocieTotal:32000, acompteVerse:null, codeConfirmation:null, agriculteurNom:'Jean Mballa', transporteurNom:'Samuel Kamga', createdAt:'2026-05-26' },
+  ]
+};
+
+const USERS_DB = {
+  '677001001': { password:'pass123', role:'AGRICULTEUR', nom:'Jean Mballa', localisation:'Obala, Centre', noteMoyenne:4.7, nombreEvaluations:23, offres:5, livraisons:0 },
+  '699002002': { password:'pass123', role:'TRANSPORTEUR', nom:'Roger Tchoukou', localisation:'Yaoundé', noteMoyenne:4.8, nombreEvaluations:41, offres:0, livraisons:38 },
+  '655003003': { password:'pass123', role:'COMMERCANT', nom:'Sophie Ngono', localisation:'Douala, Littoral', noteMoyenne:4.5, nombreEvaluations:12, offres:0, livraisons:0 },
+};
+
+// ======== NAVIGATION ========
+function showScreen(id) {
+  const prev = document.querySelector('.screen.active');
+  if (prev && prev.id !== id) STATE.screenHistory.push(prev.id);
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function goBack() {
+  if (STATE.screenHistory.length > 0) {
+    const prev = STATE.screenHistory.pop();
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(prev).classList.add('active');
+  }
+}
+
+function switchTab(tab) {
+  STATE.currentTab = tab;
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('nav-' + tab)?.classList.add('active');
+  renderTab(tab);
+}
+
+// ======== AUTH ========
+let selectedRole = 'AGRICULTEUR';
+function selectRole(role) {
+  selectedRole = role;
+  document.querySelectorAll('.role-card').forEach(c => c.classList.remove('selected'));
+  document.getElementById('role-' + role)?.classList.add('selected');
+}
+
+function doRegister() {
+  const nom = document.getElementById('reg-nom').value.trim();
+  const tel = document.getElementById('reg-tel').value.trim();
+  const pwd = document.getElementById('reg-pwd').value;
+  const loc = document.getElementById('reg-loc').value.trim();
+  const axe = document.getElementById('reg-axe').value;
+  if (!nom || !tel || !pwd || !selectedRole) { toast('Veuillez remplir tous les champs obligatoires'); return; }
+  STATE.user = { nom, telephone:tel, role:selectedRole, localisation:loc, axeRoitier:axe, noteMoyenne:0, nombreEvaluations:0, offres:0, livraisons:0 };
+  toast('Compte créé avec succès !');
+  showScreen('screen-app');
+  renderTab('home');
+}
+
+function doLogin() {
+  const tel = document.getElementById('login-tel').value.trim();
+  const pwd = document.getElementById('login-pwd').value;
+  const user = USERS_DB[tel];
+  if (!user || user.password !== pwd) { toast('Numéro ou mot de passe incorrect'); return; }
+  STATE.user = { telephone:tel, ...user };
+  toast('Connexion réussie !');
+  showScreen('screen-app');
+  renderTab('home');
+}
+
+// ======== TAB RENDERER ========
+function renderTab(tab) {
+  const el = document.getElementById('tab-content');
+  if (tab === 'home') el.innerHTML = renderHome();
+  else if (tab === 'offres') el.innerHTML = renderOffres();
+  else if (tab === 'trajets') el.innerHTML = renderTrajets();
+  else if (tab === 'matchings') el.innerHTML = renderMatchings();
+  else if (tab === 'profil') el.innerHTML = renderProfil();
+}
+
+function renderHome() {
+  const u = STATE.user;
+  const roleEmoji = { AGRICULTEUR:'👨‍🌾', TRANSPORTEUR:'🚛', COMMERCANT:'🏪' };
+  const roleLabel = { AGRICULTEUR:'Agriculteur', TRANSPORTEUR:'Transporteur', COMMERCANT:'Commerçant' };
+
+  const stats = u.role === 'AGRICULTEUR'
+    ? [['5','Offres'],['2','En cours'],['12','Livrées']]
+    : u.role === 'TRANSPORTEUR'
+    ? [['38','Trajets'],['3','En cours'],['4.8★','Ma note']]
+    : [['8','Achats'],['1','En cours'],['4.5★','Ma note']];
+
+  const recentOffres = STATE.offres.slice(0,3).map(o => `
+    <div class="offre-card" onclick="openOffreDetail(${o.id})">
+      ${o.urgent ? '<div class="urgent-tag">URGENT</div>' : ''}
+      <div class="offre-card-top">
+        <div>
+          <div class="offre-product">🌾 ${o.typeProduit}</div>
+          <div class="offre-qty">${o.quantiteKg} kg</div>
+        </div>
+        <span class="badge badge-${o.statut==='DISPONIBLE'?'green':'orange'}">${o.statut}</span>
+      </div>
+      <div class="offre-route">
+        <span>${o.villeDepart}</span>
+        <span class="route-arrow">→</span>
+        <span>${o.villeArrivee}</span>
+      </div>
+      <div class="offre-footer">
+        <span class="price">${o.prixDemande?.toLocaleString('fr-FR')} FCFA</span>
+        <span class="date-small">📅 ${new Date(o.dateDisponibilite).toLocaleDateString('fr-FR')}</span>
+      </div>
+    </div>`).join('');
+
+  const quickAction = u.role === 'AGRICULTEUR'
+    ? `<button class="btn-green" onclick="showScreen('screen-new-offre')" style="margin-bottom:12px;">➕ Publier une offre</button>`
+    : u.role === 'TRANSPORTEUR'
+    ? `<button class="btn-green" onclick="showScreen('screen-new-trajet')" style="margin-bottom:12px;">🚛 Publier un trajet</button>`
+    : `<button class="btn-green" onclick="switchTab('offres')" style="margin-bottom:12px;">🔍 Chercher des produits</button>`;
+
+  return `
+    <div class="home-header">
+      <div class="home-greeting">Bonjour,</div>
+      <div class="home-name">${u.nom}</div>
+      <div class="home-role-badge">${roleEmoji[u.role]} ${roleLabel[u.role]}</div>
+      <div class="stats-row">
+        ${stats.map(([n,l]) => `<div class="stat-card"><div class="stat-num">${n}</div><div class="stat-label">${l}</div></div>`).join('')}
+      </div>
+    </div>
+    <div class="section-card">
+      ${quickAction}
+      <div class="section-title">
+        Offres récentes
+        <button class="see-all" onclick="switchTab('offres')">Voir tout →</button>
+      </div>
+      ${recentOffres}
+    </div>`;
+}
+
+function renderOffres() {
+  const cards = STATE.offres.map(o => `
+    <div class="offre-card" onclick="openOffreDetail(${o.id})">
+      ${o.urgent ? '<div class="urgent-tag">URGENT</div>' : ''}
+      <div class="offre-card-top">
+        <div>
+          <div class="offre-product">🌾 ${o.typeProduit}</div>
+          <div class="offre-qty">${o.quantiteKg} kg · ${o.agriculteurNom}</div>
+        </div>
+        <span class="badge badge-${o.statut==='DISPONIBLE'?'green':o.statut==='EN_COURS'?'orange':'blue'}">${o.statut.replace('_',' ')}</span>
+      </div>
+      <div class="offre-route">
+        <span>${o.villeDepart}</span><span class="route-arrow">→</span><span>${o.villeArrivee}</span>
+      </div>
+      <div class="offre-footer">
+        <span class="price">${o.prixDemande?.toLocaleString('fr-FR')} FCFA</span>
+        <span class="date-small">⭐ ${o.agriculteurNote}</span>
+      </div>
+    </div>`).join('');
+
+  const addBtn = STATE.user?.role === 'AGRICULTEUR'
+    ? `<button class="btn-green" onclick="showScreen('screen-new-offre')" style="margin-bottom:16px;">➕ Publier une offre</button>` : '';
+
+  return `
+    <div style="padding:20px;">
+      <div style="font-family:'Sora',sans-serif;font-size:22px;font-weight:800;margin-bottom:4px;">Marché</div>
+      <div style="color:var(--text-light);font-size:13px;margin-bottom:16px;">${STATE.offres.length} offres disponibles</div>
+      ${addBtn}
+      <div class="tab-pills">
+        <button class="tab-pill active">Toutes</button>
+        <button class="tab-pill">Urgent</button>
+        <button class="tab-pill">Céréales</button>
+        <button class="tab-pill">Tubercules</button>
+        <button class="tab-pill">Fruits</button>
+      </div>
+      ${cards}
+    </div>`;
+}
+
+function renderTrajets() {
+  const cards = STATE.trajets.map(t => `
+    <div class="offre-card" onclick="openTrajetDetail(${t.id})">
+      <div class="offre-card-top">
+        <div>
+          <div class="offre-product">🚛 ${t.typeCamion}</div>
+          <div class="offre-qty">${t.transporteurNom} · ⭐${t.transporteurNote}</div>
+        </div>
+        <span class="badge badge-green">${t.capaciteDisponibleKg} kg dispo</span>
+      </div>
+      <div class="offre-route">
+        <span>${t.villeDepart}</span><span class="route-arrow">→</span><span>${t.villeArrivee}</span>
+      </div>
+      <div class="offre-footer">
+        <span class="price">${t.prixParKg} FCFA/kg</span>
+        <span class="date-small">📅 ${new Date(t.dateDepart).toLocaleDateString('fr-FR')}</span>
+      </div>
+    </div>`).join('');
+
+  const addBtn = STATE.user?.role === 'TRANSPORTEUR'
+    ? `<button class="btn-green" onclick="showScreen('screen-new-trajet')" style="margin-bottom:16px;">➕ Publier un trajet</button>` : '';
+
+  return `
+    <div style="padding:20px;">
+      <div style="font-family:'Sora',sans-serif;font-size:22px;font-weight:800;margin-bottom:4px;">Trajets</div>
+      <div style="color:var(--text-light);font-size:13px;margin-bottom:16px;">${STATE.trajets.length} trajets planifiés</div>
+      ${addBtn}
+      ${cards}
+    </div>`;
+}
+
+function renderMatchings() {
+  const statusLabels = {
+    EN_ATTENTE:'⏳ En attente', ACCEPTE:'✅ Accepté', REFUSE:'❌ Refusé',
+    PAIEMENT_ACOMPTE:'💳 Acompte versé', EN_TRANSIT:'🚛 En route',
+    LIVRE:'📦 Livré', CONFIRME:'✅ Confirmé', LITIGE:'⚠️ Litige'
+  };
+  const cards = STATE.matchings.map(m => `
+    <div class="offre-card" onclick="openMatchingDetail(${m.id})">
+      <div class="offre-card-top">
+        <div>
+          <div class="offre-product">🌾 ${m.typeProduit}</div>
+          <div class="offre-qty">${m.quantiteKg} kg · ${m.villeDepart} → ${m.villeArrivee}</div>
+        </div>
+        <span class="badge badge-${m.statut==='PAIEMENT_ACOMPTE'?'green':m.statut==='EN_ATTENTE'?'orange':'blue'}">${statusLabels[m.statut]||m.statut}</span>
+      </div>
+      <div style="margin-top:10px;font-size:13px;color:var(--text-light);">
+        Agriculteur: ${m.agriculteurNom} · Transporteur: ${m.transporteurNom}
+      </div>
+      <div class="offre-footer">
+        <span class="price">${m.prixNegocieTotal?.toLocaleString('fr-FR')} FCFA</span>
+        ${m.codeConfirmation ? `<span style="font-weight:800;color:var(--green);letter-spacing:3px;">🔑 ${m.codeConfirmation}</span>` : ''}
+      </div>
+    </div>`).join('');
+
+  return `
+    <div style="padding:20px;">
+      <div style="font-family:'Sora',sans-serif;font-size:22px;font-weight:800;margin-bottom:16px;">Mes Deals</div>
+      ${STATE.matchings.length ? cards : `<div class="empty"><div class="empty-icon">🤝</div><div class="empty-title">Aucun deal en cours</div><div class="empty-desc">Vos mises en relation apparaîtront ici</div></div>`}
+    </div>`;
+}
+
+function renderProfil() {
+  const u = STATE.user;
+  const stars = '★'.repeat(Math.round(u.noteMoyenne||0)) + '☆'.repeat(5 - Math.round(u.noteMoyenne||0));
+  const roleEmoji = { AGRICULTEUR:'👨‍🌾', TRANSPORTEUR:'🚛', COMMERCANT:'🏪' };
+  return `
+    <div>
+      <div class="profil-header">
+        <div class="avatar">${roleEmoji[u.role]||'👤'}</div>
+        <div style="font-family:'Sora',sans-serif;font-size:22px;font-weight:700;">${u.nom}</div>
+        <div style="opacity:0.85;margin-top:4px;font-size:13px;">${u.localisation||''}</div>
+        <div class="stars" style="margin-top:8px;">${stars}</div>
+        <div style="opacity:0.8;font-size:13px;margin-top:2px;">${u.noteMoyenne?.toFixed(1)||'0.0'} · ${u.nombreEvaluations||0} évaluations</div>
+      </div>
+      <div class="profil-body">
+        <div class="profil-stat">
+          <div class="ps-item"><div class="ps-num">${u.offres||0}</div><div class="ps-label">Offres publiées</div></div>
+          <div class="ps-item"><div class="ps-num">${u.livraisons||0}</div><div class="ps-label">Livraisons</div></div>
+          <div class="ps-item"><div class="ps-num">${u.noteMoyenne?.toFixed(1)||'—'}</div><div class="ps-label">Note moyenne</div></div>
+        </div>
+        ${[
+          ['📱','Téléphone',u.telephone],
+          ['📍','Localisation',u.localisation||'Non renseignée'],
+          ['🛣️','Axe routier',u.axeRoitier||'Non renseigné'],
+          ['🔔','Notifications','Activées'],
+          ['🔒','Sécurité & confidentialité',''],
+          ['❓','Aide & support',''],
+        ].map(([icon,label,val])=>`
+          <div class="menu-item">
+            <span class="menu-icon">${icon}</span>
+            <div><div class="menu-label">${label}</div>${val?`<div style="font-size:12px;color:var(--text-light)">${val}</div>`:''}</div>
+            <span class="menu-arrow">›</span>
+          </div>`).join('')}
+        <button class="logout-btn" onclick="doLogout()">🚪 Se déconnecter</button>
+      </div>
+    </div>`;
+}
+
+// ======== DETAIL VIEWS ========
+function openOffreDetail(id) {
+  const o = STATE.offres.find(x => x.id === id);
+  if (!o) return;
+
+  document.getElementById('detail-product-name').textContent = `🌾 ${o.typeProduit}`;
+  document.getElementById('detail-product-sub').textContent = `${o.quantiteKg} kg · ${o.villeDepart} → ${o.villeArrivee}`;
+
+  const typeLogLabel = { CAMION_PASSAGE:'Camion de passage', DEPOT_HUB:'Dépôt en mini-hub', VENTE_DIRECTE_CHAUFFEUR:'Vente directe chauffeur' };
+
+  document.getElementById('detail-content').innerHTML = `
+    <div style="margin-bottom:16px;">
+      <span class="badge badge-${o.statut==='DISPONIBLE'?'green':'orange'}">${o.statut}</span>
+      ${o.urgent ? '<span class="badge badge-red" style="margin-left:8px;">🔴 URGENT</span>' : ''}
+    </div>
+    ${[
+      ['⚖️','Quantité',`${o.quantiteKg} kg`],
+      ['📍','Départ',o.villeDepart],
+      ['🏁','Arrivée',o.villeArrivee],
+      ['📅','Disponible',new Date(o.dateDisponibilite).toLocaleDateString('fr-FR')],
+      ['💰','Prix souhaité',`${o.prixDemande?.toLocaleString('fr-FR')} FCFA`],
+      ['🚛','Mode logistique',typeLogLabel[o.typeLogistique]||o.typeLogistique],
+      ['👨‍🌾','Agriculteur',o.agriculteurNom],
+      ['📞','Contact',o.agriculteurTelephone],
+      ['⭐','Note agriculteur',`${o.agriculteurNote} / 5`],
+    ].map(([icon,label,val])=>`
+      <div class="info-row">
+        <span class="info-icon">${icon}</span>
+        <div><div class="info-label">${label}</div><div class="info-value">${val}</div></div>
+      </div>`).join('')}
+    ${o.description ? `<div style="margin-top:16px;padding:14px;background:var(--green-pale);border-radius:12px;font-size:14px;color:var(--text-light);">📝 ${o.description}</div>` : ''}
+  `;
+
+  // Options logistiques
+  const trajetsCompatibles = STATE.trajets.filter(t =>
+    t.villeDepart === o.villeDepart && t.villeArrivee === o.villeArrivee && t.capaciteDisponibleKg >= o.quantiteKg
+  );
+
+  document.getElementById('detail-options').innerHTML = `
+    <div style="margin-top:24px;">
+      <div class="section-title" style="font-size:15px;">🤖 Options logistiques</div>
+      <div class="option-card selected" onclick="selectOption(this,'camion')">
+        <div class="option-header">
+          <span class="option-icon">🚛</span>
+          <div>
+            <div class="option-title">Camions de passage</div>
+            <div class="option-count">${trajetsCompatibles.length} camion(s) disponible(s)</div>
+          </div>
+        </div>
+        <div class="option-desc">Transport direct par camion sur votre axe. Recommandé pour les grandes quantités.</div>
+      </div>
+      <div class="option-card" onclick="selectOption(this,'hub')">
+        <div class="option-header">
+          <span class="option-icon">🏭</span>
+          <div>
+            <div class="option-title">Dépôt en mini-hub</div>
+            <div class="option-count">2 hubs proches trouvés</div>
+          </div>
+        </div>
+        <div class="option-desc">Déposez vos produits dans un point de collecte. Regroupement avec d'autres agriculteurs.</div>
+      </div>
+      <div class="option-card" onclick="selectOption(this,'chauffeur')">
+        <div class="option-header">
+          <span class="option-icon">🤝</span>
+          <div>
+            <div class="option-title">Vente directe chauffeur</div>
+            <div class="option-count">3 acheteurs disponibles</div>
+          </div>
+        </div>
+        <div class="option-desc">Vendez directement à un chauffeur-acheteur qui prend en charge tout le transport.</div>
+      </div>
+    </div>
+  `;
+
+  const u = STATE.user;
+  document.getElementById('detail-actions').innerHTML = u?.role === 'TRANSPORTEUR'
+    ? `<button class="btn-green" onclick="proposeMatching(${o.id})">Proposer mon trajet</button>`
+    : u?.role === 'AGRICULTEUR' && u?.telephone === o.agriculteurTelephone
+    ? `<button class="btn-green" style="background:#e67e22;" onclick="toast('Offre annulée')">Annuler l\'offre</button>`
+    : `<button class="btn-green" onclick="toast('Contactez l\'agriculteur au ${o.agriculteurTelephone}')">📞 Contacter l'agriculteur</button>`;
+
+  showScreen('screen-offre-detail');
+}
+
+function openTrajetDetail(id) {
+  const t = STATE.trajets.find(x => x.id === id);
+  if (!t) return;
+  document.getElementById('detail-product-name').textContent = `🚛 ${t.typeCamion}`;
+  document.getElementById('detail-product-sub').textContent = `${t.villeDepart} → ${t.villeArrivee}`;
+  document.getElementById('detail-content').innerHTML = [
+    ['📍','Départ',t.villeDepart],
+    ['🏁','Arrivée',t.villeArrivee],
+    ['📅','Date de départ',new Date(t.dateDepart).toLocaleString('fr-FR')],
+    ['⚖️','Capacité disponible',`${t.capaciteDisponibleKg} kg`],
+    ['💰','Prix',`${t.prixParKg} FCFA/kg`],
+    ['👤','Transporteur',t.transporteurNom],
+    ['📞','Contact',t.transporteurTelephone],
+    ['⭐','Note',`${t.transporteurNote} / 5`],
+  ].map(([icon,label,val])=>`<div class="info-row"><span class="info-icon">${icon}</span><div><div class="info-label">${label}</div><div class="info-value">${val}</div></div></div>`).join('');
+  document.getElementById('detail-options').innerHTML = '';
+  document.getElementById('detail-actions').innerHTML = STATE.user?.role === 'AGRICULTEUR'
+    ? `<button class="btn-green" onclick="toast('Réservation envoyée au transporteur !')">Réserver de l'espace</button>`
+    : `<button class="btn-green" onclick="toast('Contact: ${t.transporteurTelephone}')">📞 Contacter</button>`;
+  showScreen('screen-offre-detail');
+}
+
+function openMatchingDetail(id) {
+  const m = STATE.matchings.find(x => x.id === id);
+  if (!m) return;
+  STATE.currentMatchingId = id;
+
+  if (m.statut === 'EN_ATTENTE') {
+    openNegociation(m);
+  } else if (m.statut === 'ACCEPTE') {
+    openPaiement(m);
+  } else {
+    openMatchingStatus(m);
+  }
+}
+
+function openNegociation(m) {
+  document.getElementById('detail-product-name').textContent = `🤝 ${m.typeProduit}`;
+  document.getElementById('detail-product-sub').textContent = 'Négociation en cours';
+  document.getElementById('detail-content').innerHTML = `
+    <div class="chat-messages" style="height:280px;">
+      <div style="text-align:center;padding:8px;font-size:12px;color:var(--text-light);">Aujourd'hui 09:15</div>
+      <div class="chat-bubble chat-other">Bonjour ! Je suis intéressé par vos ${m.quantiteKg} kg de ${m.typeProduit}. Je peux faire ${m.villeDepart} → ${m.villeArrivee} le 5 juin.
+        <div class="chat-time">09:15</div>
+      </div>
+      <div class="chat-bubble chat-mine">Bonjour Roger ! Quel est votre prix pour cette quantité ?
+        <div class="chat-time">09:22</div>
+      </div>
+      <div class="chat-bubble chat-other">Je propose ${(m.prixNegocieTotal*0.9)|0} FCFA pour tout le lot, livraison garantie.
+        <div class="chat-time">09:28</div>
+      </div>
+    </div>
+    <div class="chat-input-bar">
+      <input class="chat-input" id="chat-msg" placeholder="Votre message..." />
+      <button class="chat-send" onclick="sendMessage()">➤</button>
+    </div>
+  `;
+  document.getElementById('detail-options').innerHTML = '';
+  document.getElementById('detail-actions').innerHTML = STATE.user?.role === 'AGRICULTEUR' ? `
+    <div style="display:flex;gap:10px;margin-top:8px;">
+      <button style="flex:1;border:2px solid #e74c3c;color:#e74c3c;background:none;border-radius:50px;padding:14px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;" onclick="toast('Proposition refusée')">Refuser</button>
+      <button style="flex:2;" class="btn-green" onclick="acceptMatching(${m.id})">Accepter le deal</button>
+    </div>` : `<button class="btn-green" onclick="toast('En attente de réponse de l\'agriculteur')">En attente...</button>`;
+  showScreen('screen-offre-detail');
+}
+
+function openPaiement(m) {
+  document.getElementById('paiement-detail').innerHTML = `
+    <div style="background:var(--green-pale);border-radius:var(--radius);padding:16px;margin-bottom:4px;">
+      <div style="font-weight:700;margin-bottom:8px;">📦 ${m.typeProduit} · ${m.quantiteKg} kg</div>
+      <div style="font-size:13px;color:var(--text-light);">${m.villeDepart} → ${m.villeArrivee}</div>
+      <div style="display:flex;justify-content:space-between;margin-top:12px;">
+        <div><div style="font-size:12px;color:var(--text-light)">Prix total</div><div style="font-weight:700">${m.prixNegocieTotal?.toLocaleString('fr-FR')} FCFA</div></div>
+        <div style="text-align:right"><div style="font-size:12px;color:var(--text-light)">Acompte 30%</div><div style="font-weight:800;color:var(--green);font-size:18px">${Math.ceil(m.prixNegocieTotal*0.3).toLocaleString('fr-FR')} FCFA</div></div>
+      </div>
+    </div>`;
+  STATE.currentMatchingId = m.id;
+  showScreen('screen-paiement');
+}
+
+function openMatchingStatus(m) {
+  document.getElementById('detail-product-name').textContent = `📦 ${m.typeProduit}`;
+  document.getElementById('detail-product-sub').textContent = m.statut;
+  document.getElementById('detail-content').innerHTML = [
+    ['👨‍🌾','Agriculteur',m.agriculteurNom],
+    ['🚛','Transporteur',m.transporteurNom],
+    ['⚖️','Quantité',`${m.quantiteKg} kg`],
+    ['💰','Prix total',`${m.prixNegocieTotal?.toLocaleString('fr-FR')} FCFA`],
+    ['💳','Acompte versé',m.acompteVerse ? `${m.acompteVerse.toLocaleString('fr-FR')} FCFA` : 'Non versé'],
+    m.codeConfirmation ? ['🔑','Code livraison',m.codeConfirmation] : null,
+  ].filter(Boolean).map(([icon,label,val])=>`<div class="info-row"><span class="info-icon">${icon}</span><div><div class="info-label">${label}</div><div class="info-value">${val}</div></div></div>`).join('');
+  document.getElementById('detail-options').innerHTML = '';
+  document.getElementById('detail-actions').innerHTML = m.statut === 'PAIEMENT_ACOMPTE' && STATE.user?.role === 'TRANSPORTEUR'
+    ? `<button class="btn-green" onclick="confirmLivraison('${m.codeConfirmation}')">✅ Confirmer livraison</button>`
+    : m.statut === 'PAIEMENT_ACOMPTE' && STATE.user?.role === 'AGRICULTEUR'
+    ? `<button class="btn-green" onclick="openPaiement(${JSON.stringify(m).replace(/"/g,'&quot;')})">💳 Finaliser paiement</button>`
+    : '';
+  showScreen('screen-offre-detail');
+}
+
+function sendMessage() {
+  const inp = document.getElementById('chat-msg');
+  if (!inp.value.trim()) return;
+  const msgs = document.querySelector('.chat-messages');
+  msgs.innerHTML += `<div class="chat-bubble chat-mine">${inp.value}<div class="chat-time">Maintenant</div></div>`;
+  inp.value = '';
+  msgs.scrollTop = msgs.scrollHeight;
+  setTimeout(() => {
+    msgs.innerHTML += `<div class="chat-bubble chat-other">D'accord, c'est noté. Je confirme la prise en charge.<div class="chat-time">Maintenant</div></div>`;
+    msgs.scrollTop = msgs.scrollHeight;
+  }, 1200);
+}
+
+function proposeMatching(offreId) {
+  STATE.matchings.unshift({
+    id: Date.now(), offreId, typeProduit: STATE.offres.find(o=>o.id===offreId)?.typeProduit,
+    quantiteKg: STATE.offres.find(o=>o.id===offreId)?.quantiteKg,
+    villeDepart: STATE.offres.find(o=>o.id===offreId)?.villeDepart,
+    villeArrivee: STATE.offres.find(o=>o.id===offreId)?.villeArrivee,
+    statut:'EN_ATTENTE', prixNegocieTotal:25000, agriculteurNom:'Jean Mballa',
+    transporteurNom: STATE.user?.nom, createdAt: new Date().toISOString().split('T')[0]
+  });
+  toast('Proposition envoyée à l\'agriculteur !');
+  goBack();
+}
+
+function acceptMatching(id) {
+  const m = STATE.matchings.find(x=>x.id===id);
+  if (m) { m.statut = 'ACCEPTE'; m.acompteVerse = Math.ceil(m.prixNegocieTotal*0.3); }
+  openPaiement(m);
+}
+
+function selectOption(el, type) {
+  document.querySelectorAll('.option-card').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+// ======== PAIEMENT ========
+function selectPayment(method) {
+  STATE.selectedPayment = method;
+  document.getElementById('pay-momo').classList.toggle('selected', method === 'MTN_MOMO');
+  document.getElementById('pay-orange').classList.toggle('selected', method === 'ORANGE_MONEY');
+  const momoChk = document.querySelector('#pay-momo span:last-child');
+  const orangeChk = document.querySelector('#pay-orange span:last-child');
+  if (momoChk) momoChk.textContent = method === 'MTN_MOMO' ? '✓' : '';
+  if (orangeChk) orangeChk.textContent = method === 'ORANGE_MONEY' ? '✓' : '';
+}
+
+function doPayment() {
+  const tel = document.getElementById('pay-tel').value;
+  if (!tel) { toast('Veuillez entrer votre numéro Mobile Money'); return; }
+  const m = STATE.matchings.find(x=>x.id===STATE.currentMatchingId);
+  if (m) { m.statut='PAIEMENT_ACOMPTE'; m.codeConfirmation = String(Math.floor(100000+Math.random()*900000)); }
+
+  document.getElementById('success-title').textContent = 'Paiement confirmé !';
+  document.getElementById('success-desc').textContent = `Votre acompte de ${Math.ceil((m?.prixNegocieTotal||25000)*0.3).toLocaleString('fr-FR')} FCFA est sécurisé. Partagez ce code au transporteur à la livraison.`;
+  document.getElementById('success-code').textContent = m?.codeConfirmation || '847291';
+  showScreen('screen-success');
+}
+
+function confirmLivraison(code) {
+  const m = STATE.matchings.find(x=>x.codeConfirmation===code);
+  if (m) m.statut = 'LIVRE';
+  document.getElementById('success-title').textContent = 'Livraison confirmée !';
+  document.getElementById('success-desc').textContent = 'La livraison a été validée. Le solde sera libéré au transporteur dans 24h.';
+  document.getElementById('success-code').textContent = '✅';
+  showScreen('screen-success');
+}
+
+function publishOffre() {
+  const type = document.getElementById('new-type').value;
+  const qty = document.getElementById('new-qty').value;
+  const dep = document.getElementById('new-depart').value;
+  const arr = document.getElementById('new-arrivee').value;
+  const date = document.getElementById('new-date').value;
+  if (!type||!qty||!dep||!arr||!date) { toast('Veuillez remplir tous les champs obligatoires'); return; }
+  STATE.offres.unshift({
+    id: Date.now(), typeProduit:type, quantiteKg:parseFloat(qty), description:document.getElementById('new-desc').value,
+    villeDepart:dep, villeArrivee:arr, dateDisponibilite:date,
+    prixDemande:parseInt(document.getElementById('new-prix').value)||null,
+    statut:'DISPONIBLE', typeLogistique:'CAMION_PASSAGE',
+    urgent:document.getElementById('new-urgent').checked,
+    agriculteurNom:STATE.user?.nom, agriculteurTelephone:STATE.user?.telephone, agriculteurNote:STATE.user?.noteMoyenne||0
+  });
+  toast('Offre publiée avec succès !');
+  goBack();
+  switchTab('offres');
+}
+
+function publishTrajet() {
+  const dep=document.getElementById('t-depart').value, arr=document.getElementById('t-arrivee').value;
+  const date=document.getElementById('t-date').value, cap=document.getElementById('t-cap').value;
+  const prix=document.getElementById('t-prix').value;
+  if (!dep||!arr||!date||!cap) { toast('Veuillez remplir tous les champs'); return; }
+  STATE.trajets.unshift({
+    id:Date.now(), villeDepart:dep, villeArrivee:arr, dateDepart:date+'T06:00',
+    capaciteDisponibleKg:parseFloat(cap), typeCamion:document.getElementById('t-camion').value,
+    prixParKg:parseFloat(prix)||50, statut:'PLANIFIE',
+    transporteurNom:STATE.user?.nom, transporteurTelephone:STATE.user?.telephone, transporteurNote:STATE.user?.noteMoyenne||0
+  });
+  toast('Trajet publié avec succès !');
+  goBack();
+  switchTab('trajets');
+}
+
+function doLogout() {
+  STATE.user = null;
+  STATE.screenHistory = [];
+  showScreen('screen-splash');
+}
+
+// ======== UTILS ========
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'), 2800);
+}
+
+// Init date inputs
+document.addEventListener('DOMContentLoaded', () => {
+  const today = new Date().toISOString().split('T')[0];
+  ['new-date','t-date'].forEach(id=>{const el=document.getElementById(id);if(el)el.min=today;});
+});
+</script>
+</body>
+</html>
