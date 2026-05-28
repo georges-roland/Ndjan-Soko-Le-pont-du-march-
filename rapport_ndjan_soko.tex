@@ -1,0 +1,1338 @@
+\documentclass[12pt,a4paper]{report}
+
+% ─── Encodage et langue ───────────────────────────────────────────────────────
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+
+% ─── Mise en page ─────────────────────────────────────────────────────────────
+\usepackage[top=2.5cm, bottom=2.5cm, left=3cm, right=2.5cm]{geometry}
+\usepackage{setspace}
+\onehalfspacing
+
+% ─── Typographie ──────────────────────────────────────────────────────────────
+\usepackage{microtype}
+
+% ─── En-têtes et pieds de page ────────────────────────────────────────────────
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\textit{Ndjan-Soko — Rapport Technique}}
+\fancyhead[R]{\small\textit{Keyce IA — Bachelor 2}}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% ─── Couleurs ─────────────────────────────────────────────────────────────────
+\usepackage[dvipsnames]{xcolor}
+\definecolor{mainblue}{RGB}{31, 73, 125}
+\definecolor{lightblue}{RGB}{214, 234, 248}
+\definecolor{codegray}{RGB}{245, 245, 245}
+\definecolor{critred}{RGB}{192, 0, 0}
+\definecolor{warnorange}{RGB}{197, 90, 17}
+
+% ─── Titres de sections ───────────────────────────────────────────────────────
+\usepackage{titlesec}
+\titleformat{\chapter}[display]
+  {\normalfont\Large\bfseries\color{mainblue}}
+  {\chaptertitlename\ \thechapter}{10pt}{\Huge}
+\titleformat{\section}
+  {\normalfont\large\bfseries\color{mainblue}}{\thesection}{1em}{}
+\titleformat{\subsection}
+  {\normalfont\normalsize\bfseries\color{mainblue}}{\thesubsection}{1em}{}
+\titleformat{\subsubsection}
+  {\normalfont\normalsize\bfseries}{\thesubsubsection}{1em}{}
+
+% ─── Tableaux ─────────────────────────────────────────────────────────────────
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{tabularx}
+\usepackage{colortbl}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+
+% ─── Listes ───────────────────────────────────────────────────────────────────
+\usepackage{enumitem}
+\setlist[itemize]{leftmargin=1.5em, itemsep=2pt, topsep=4pt}
+\setlist[enumerate]{leftmargin=1.5em, itemsep=2pt, topsep=4pt}
+
+% ─── Code source ──────────────────────────────────────────────────────────────
+\usepackage{listings}
+\lstset{
+  backgroundcolor=\color{codegray},
+  basicstyle=\footnotesize\ttfamily,
+  breakatwhitespace=false,
+  breaklines=true,
+  captionpos=b,
+  commentstyle=\color{OliveGreen},
+  frame=single,
+  keywordstyle=\color{NavyBlue}\bfseries,
+  stringstyle=\color{BrickRed},
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  stepnumber=1,
+  numbersep=5pt,
+  showstringspaces=false,
+  tabsize=2,
+  xleftmargin=10pt,
+  xrightmargin=5pt,
+  rulecolor=\color{gray!40},
+}
+\lstdefinelanguage{yaml}{
+  keywords={true,false,null},
+  keywordstyle=\color{NavyBlue}\bfseries,
+  sensitive=false,
+  comment=[l]{\#},
+  morestring=[b]',
+  morestring=[b]",
+}
+\lstdefinelanguage{docker}{
+  keywords={FROM, RUN, CMD, LABEL, EXPOSE, ENV, ADD, COPY, ENTRYPOINT, VOLUME, USER, WORKDIR, ARG, ONBUILD, STOPSIGNAL, HEALTHCHECK, SHELL},
+  keywordstyle=\color{NavyBlue}\bfseries,
+  comment=[l]{\#},
+  morestring=[b]",
+}
+
+% ─── Boîtes colorées ──────────────────────────────────────────────────────────
+\usepackage{tcolorbox}
+\tcbuselibrary{skins, breakable}
+\newtcolorbox{critbox}{
+  colback=red!5!white, colframe=critred,
+  fonttitle=\bfseries, title=Point Critique,
+  breakable
+}
+\newtcolorbox{infobox}[1][]{
+  colback=lightblue!50, colframe=mainblue,
+  fonttitle=\bfseries, title=#1,
+  breakable
+}
+
+% ─── Mathématiques ────────────────────────────────────────────────────────────
+\usepackage{amsmath}
+
+% ─── Liens hypertexte ─────────────────────────────────────────────────────────
+\usepackage[hidelinks, pdfencoding=auto]{hyperref}
+\hypersetup{
+  pdftitle={Rapport Ndjan-Soko},
+  pdfauthor={Ndjan-Soko Roland Epole},
+  pdfsubject={Plateforme numérique d'agribusiness pour le Cameroun},
+  colorlinks=true,
+  linkcolor=mainblue,
+  urlcolor=mainblue,
+  citecolor=mainblue
+}
+
+% ─── Table des matières ───────────────────────────────────────────────────────
+\usepackage{tocloft}
+\renewcommand{\cfttoctitlefont}{\Large\bfseries\color{mainblue}}
+\setlength{\cftbeforetoctitleskip}{0pt}
+
+% ─── Figures ──────────────────────────────────────────────────────────────────
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{float}
+
+% ─── Divers ───────────────────────────────────────────────────────────────────
+\usepackage{pifont}
+\newcommand{\cmark}{\ding{51}}
+\newcommand{\xmark}{\ding{55}}
+
+% ─────────────────────────────────────────────────────────────────────────────
+%  DOCUMENT
+% ─────────────────────────────────────────────────────────────────────────────
+\begin{document}
+
+% ──────────────────────────────────────────────────────────────────────────────
+%  PAGE DE TITRE
+% ──────────────────────────────────────────────────────────────────────────────
+\begin{titlepage}
+  \centering
+  \vspace*{1.5cm}
+  {\Huge\bfseries\color{mainblue} Ndjan-Soko\par}
+  \vspace{0.4cm}
+  {\Large\itshape « Le Pont du Marché »\par}
+  \vspace{1.5cm}
+  \rule{\linewidth}{1pt}\\[0.4cm]
+  {\LARGE\bfseries Rapport Technique\par}
+  {\large Plateforme numérique d'agribusiness cross-platform\\
+  pour le contexte socio-économique du Cameroun\par}
+  \rule{\linewidth}{1pt}\\[1.5cm]
+
+  \begin{minipage}[t]{0.45\textwidth}
+    \textbf{Auteur :}\\
+    Ndjan-Soko, Roland Epole
+  \end{minipage}
+  \hfill
+  \begin{minipage}[t]{0.45\textwidth}
+    \raggedleft
+    \textbf{Établissement :}\\
+    Keyce Informatique \& Intelligence Artificielle\\
+    \textbf{Niveau :} Bachelor 2\\
+    \textbf{Version :} 2.0\\
+    \textbf{Date :} Juin 2026
+  \end{minipage}
+
+  \vfill
+  {\large\textbf{Stack technique :} React Native (Expo EAS) + Spring Boot (Java 17)\\
+  PostgreSQL avec extension PostGIS\par}
+  \vspace{0.5cm}
+  {\small Durée du projet : 4 semaines — 2 Sprints Agile Scrum\par
+  Équipe : 5 ingénieurs (1 PO/SM + 2 Backend + 2 Frontend)\par}
+\end{titlepage}
+
+\pagenumbering{roman}
+
+% ──────────────────────────────────────────────────────────────────────────────
+%  RÉSUMÉ
+% ──────────────────────────────────────────────────────────────────────────────
+\chapter*{Résumé}
+\addcontentsline{toc}{chapter}{Résumé}
+
+Ndjan-Soko, dont le nom signifie \textbf{« Le Pont du Marché »} en langue locale, est une plateforme numérique d'agribusiness cross-platform conçue pour le contexte socio-économique du Cameroun. Ce projet vise à résoudre trois problèmes fondamentaux qui affectent la chaîne de valeur agricole : l'asymétrie d'information sur les prix des denrées, les pertes post-récolte massives estimées entre 30 et 40~\% de la production maraîchère et fruitière en Afrique subsaharienne, et le coût prohibitif du transport individuel pour les petits exploitants.
+
+La solution proposée repose sur une architecture technique moderne combinant React Native avec Expo CLI pour le frontend mobile multiplateforme (Android et iOS), et Spring Boot 3.x avec PostgreSQL pour le backend. La plateforme intègre six modules fonctionnels : un système d'authentification multi-rôle par OTP SMS, une bourse des prix agricoles en temps réel consultable hors connexion, une place de marché géolocalisée avec mode offline-first, un moteur logistique de groupage (covoiturage de fret), un système de paiement sécurisé par mécanisme d'escrow via Mobile Money, et une passerelle USSD pour l'inclusion numérique des agriculteurs sans smartphone.
+
+Le modèle économique repose principalement sur une commission de 4~\% prélevée sur chaque transaction lors du déblocage de l'escrow, complétée par des abonnements Premium et de la publicité locale ciblée. Le déploiement est prévu en trois phases : lancement au Cameroun sur deux régions pilotes, consolidation nationale, puis expansion vers les pays de la zone CEMAC.
+
+% ──────────────────────────────────────────────────────────────────────────────
+%  ABSTRACT
+% ──────────────────────────────────────────────────────────────────────────────
+\chapter*{Abstract}
+\addcontentsline{toc}{chapter}{Abstract}
+
+Ndjan-Soko, meaning \textit{``The Market Bridge''} in local language, is a cross-platform digital agribusiness solution designed for the socio-economic context of Cameroon. The project addresses three fundamental challenges affecting the agricultural value chain: price information asymmetry, significant post-harvest losses estimated at 30 to 40\% of fruit and vegetable production in Sub-Saharan Africa, and the prohibitive individual transport costs for small-scale farmers.
+
+The proposed solution relies on a modern technical architecture combining React Native with Expo CLI for the cross-platform mobile frontend (Android and iOS), and Spring Boot 3.x with PostgreSQL for the backend. The platform integrates six functional modules: a multi-role OTP SMS authentication system, a real-time agricultural price exchange consultable offline, a geolocated marketplace with offline-first capability, a freight pooling logistics engine, a secured escrow payment system via Mobile Money, and a USSD gateway for digital inclusion of farmers without smartphones.
+
+% ──────────────────────────────────────────────────────────────────────────────
+%  LISTE DES ABRÉVIATIONS
+% ──────────────────────────────────────────────────────────────────────────────
+\chapter*{Liste des Abréviations}
+\addcontentsline{toc}{chapter}{Liste des Abréviations}
+
+\begin{longtable}{L{3cm} L{11cm}}
+\toprule
+\textbf{Abréviation} & \textbf{Signification} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Abréviation} & \textbf{Signification} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+ACID & Atomicity, Consistency, Isolation, Durability — Propriétés des transactions BDD \\
+API & Application Programming Interface \\
+BCrypt & Algorithme de hachage cryptographique pour mots de passe \\
+BDD & Base de Données \\
+CEMAC & Communauté Économique et Monétaire de l'Afrique Centrale \\
+COBAC & Commission Bancaire de l'Afrique Centrale \\
+CLI & Command Line Interface \\
+FCM & Firebase Cloud Messaging \\
+GIC & Groupement d'Intérêt Communautaire \\
+GPS & Global Positioning System \\
+HTTP/HTTPS & HyperText Transfer Protocol (Secure) \\
+IA & Intelligence Artificielle \\
+JPA & Java Persistence API \\
+JWT & JSON Web Token \\
+KYC & Know Your Customer — Procédure de vérification d'identité \\
+MINADER & Ministère de l'Agriculture et du Développement Rural (Cameroun) \\
+MTN MoMo & MTN Mobile Money \\
+MVP & Minimum Viable Product \\
+OCR & Optical Character Recognition \\
+ORM & Object-Relational Mapping \\
+OTP & One-Time Password \\
+PostGIS & Extension géospatiale pour PostgreSQL \\
+PVU & Proposition de Valeur Unique \\
+REST & Representational State Transfer \\
+SHA-256 & Secure Hash Algorithm 256 bits \\
+SLA & Service Level Agreement \\
+SMS & Short Message Service \\
+TFLite & TensorFlow Lite — IA embarquée mobile \\
+USSD & Unstructured Supplementary Service Data \\
+VPS & Virtual Private Server \\
+VRP & Vehicle Routing Problem \\
+\end{longtable}
+
+% ──────────────────────────────────────────────────────────────────────────────
+%  GLOSSAIRE
+% ──────────────────────────────────────────────────────────────────────────────
+\chapter*{Glossaire}
+\addcontentsline{toc}{chapter}{Glossaire}
+
+\textbf{Bayam-Sellam} : Terme camerounais désignant les revendeuses des marchés urbains, en particulier à Douala et Yaoundé. Ces commerçantes jouent un rôle d'intermédiaire crucial dans la chaîne de distribution des produits agricoles.
+
+\medskip
+\textbf{Covoiturage de fret} : Concept innovant adapté au transport de marchandises agricoles, permettant à plusieurs petits producteurs de partager les coûts d'un même camion en regroupant leurs cargaisons sur un trajet commun.
+
+\medskip
+\textbf{Escrow (compte séquestre)} : Mécanisme financier où les fonds d'une transaction sont temporairement déposés auprès d'un tiers de confiance (la plateforme) et ne sont libérés vers le vendeur qu'après confirmation de la bonne réception de la marchandise par l'acheteur.
+
+\medskip
+\textbf{GIC (Groupement d'Intérêt Communautaire)} : Structure coopérative agricole reconnue au Cameroun, regroupant plusieurs exploitants autour d'intérêts communs pour mutualiser les ressources, négocier collectivement et accéder à des marchés plus vastes.
+
+\medskip
+\textbf{Groupage logistique} : Technique consistant à consolider plusieurs petits chargements de producteurs géographiquement proches en un seul lot de transport pour optimiser le remplissage des véhicules et réduire les coûts individuels.
+
+\medskip
+\textbf{Offline-first} : Paradigme de développement mobile où l'application est conçue pour fonctionner intégralement sans connexion internet, en stockant les données localement, et synchronise automatiquement avec le serveur dès que le réseau est disponible.
+
+\medskip
+\textbf{PostGIS} : Extension open source de la base de données PostgreSQL ajoutant des types de données géographiques et des fonctions de calcul spatial, utilisée pour les calculs de distance et le regroupement géographique des agriculteurs.
+
+\medskip
+\textbf{Registre SHA-256 chaîné} : Mécanisme de sécurité inspiré de la blockchain où chaque transaction financière contient l'empreinte cryptographique de la transaction précédente. Toute modification frauduleuse d'un enregistrement passé brise la chaîne et déclenche une alerte.
+
+\medskip
+\textbf{USSD} : Protocole de communication GSM permettant d'envoyer des messages textuels via des codes comme \texttt{*123\#}, fonctionnant sur tout téléphone mobile y compris les téléphones basiques sans accès à internet.
+
+% ──────────────────────────────────────────────────────────────────────────────
+%  FICHE D'IDENTITÉ
+% ──────────────────────────────────────────────────────────────────────────────
+\chapter*{Fiche d'identité du projet}
+\addcontentsline{toc}{chapter}{Fiche d'identité du projet}
+
+\begin{table}[H]
+\centering
+\caption{Fiche d'identité du projet Ndjan-Soko}
+\begin{tabularx}{\textwidth}{L{5cm} X}
+\toprule
+\textbf{Champ} & \textbf{Détail} \\
+\midrule
+Nom du projet & Ndjan-Soko (« Le Pont du Marché ») \\
+Version du document & 2.0 \\
+Date de rédaction & Juin 2026 \\
+École & Keyce Informatique \& Intelligence Artificielle \\
+Niveau & Bachelor 2 \\
+Stack technique & React Native (Expo EAS) + Spring Boot (Java 17) \\
+Base de données & PostgreSQL avec extension PostGIS \\
+Déploiement backend & Railway / Render / VPS (JAR Docker) \\
+Déploiement mobile & Expo EAS (APK Android + IPA iOS) \\
+Durée du projet & 4 semaines — 2 Sprints Agile Scrum \\
+Taille de l'équipe & 5 ingénieurs (1 PO/SM + 2 Backend + 2 Frontend) \\
+Filières pilotes & Tomate (Foumbot), Plantain (Moungo/Njombé), Manioc \\
+Axes logistiques & Bafoussam–Douala, Yaoundé–Bafoussam \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Historique des révisions du document}
+\begin{tabularx}{\textwidth}{C{2cm} C{2.5cm} C{3cm} X}
+\toprule
+\textbf{Version} & \textbf{Date} & \textbf{Auteur(s)} & \textbf{Modifications} \\
+\midrule
+1.0 & Mai 2026 & Équipe projet & Rédaction initiale — Sections 1 et 2 \\
+1.5 & Mai 2026 & Équipe projet & Ajout des Sections 3 et 4 (Architecture technique \& Sécurité) \\
+2.0 & Juin 2026 & Équipe projet & Document complet — Intégration des Sections 5 et 6, révision globale \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+% ──────────────────────────────────────────────────────────────────────────────
+%  EXECUTIVE SUMMARY
+% ──────────────────────────────────────────────────────────────────────────────
+\chapter*{Executive Summary}
+\addcontentsline{toc}{chapter}{Executive Summary}
+
+Ndjan-Soko « Le Pont du Marché » est une application mobile cross-platform développée sous React Native (Expo EAS) et adossée à un backend RESTful Spring Boot. Elle répond à un double dysfonctionnement structurel du secteur agropastoral camerounais : la perte massive de denrées périssables en zone rurale (30 à 40~\% de la production) et l'asymétrie d'information qui prive les producteurs de toute capacité de négociation face aux intermédiaires urbains.
+
+La plateforme connecte quatre acteurs clés — Agriculteurs, Acheteurs (Bayam-Sellam, grossistes), Transporteurs et Gérants de Hubs logistiques — au travers de six modules fonctionnels complémentaires : une bourse de prix en temps réel, un moteur de groupage logistique géolocalisé (PostGIS), un scanner de qualité par IA embarquée TensorFlow Lite fonctionnel hors ligne, un registre financier cryptographique anti-fraude (SHA-256), une passerelle USSD inclusive et un système d'authentification sans mot de passe par OTP.
+
+Le MVP est structuré sur un cycle de 4 semaines (2 Sprints Agile Scrum) pour une équipe de 5 ingénieurs. Il cible les filières pilotes Tomate (Foumbot), Plantain (Moungo) et Manioc, sur les axes routiers Bafoussam–Douala et Yaoundé–Bafoussam.
+
+Ce cahier des charges constitue le document contractuel de référence pour la soutenance devant le jury Keyce IA, de la première ligne de code jusqu'à la livraison de l'APK Android final.
+
+% ──────────────────────────────────────────────────────────────────────────────
+%  TABLES
+% ──────────────────────────────────────────────────────────────────────────────
+\tableofcontents
+\listoffigures
+\listoftables
+
+\clearpage
+\pagenumbering{arabic}
+
+% ══════════════════════════════════════════════════════════════════════════════
+%  INTRODUCTION
+% ══════════════════════════════════════════════════════════════════════════════
+\chapter*{Introduction}
+\addcontentsline{toc}{chapter}{Introduction}
+
+\section*{1.1 Contexte}
+\addcontentsline{toc}{section}{1.1 Contexte}
+
+L'agriculture représente l'un des piliers fondamentaux de l'économie camerounaise, employant près de 60~\% de la population active et contribuant de manière significative au PIB national. Pourtant, malgré cette importance structurelle, la chaîne de valeur agricole reste profondément fragmentée et inefficace. Les régions productrices — notamment le Grand Ouest, le Moungo et le Littoral — sont géographiquement éloignées des grands centres de consommation que sont Douala et Yaoundé. Cette distance, combinée à un manque criant d'outils numériques adaptés aux réalités locales, crée des déséquilibres persistants au détriment des producteurs ruraux.
+
+À l'échelle de l'Afrique subsaharienne, on estime que 30 à 40~\% de la production fruitière et maraîchère est perdue avant même d'atteindre le consommateur final. Cette situation résulte directement de l'absence d'une infrastructure informationnelle et logistique efficace. Le numérique, lorsqu'il est conçu de manière contextuelle et inclusive, constitue l'un des leviers les plus puissants pour transformer cette réalité.
+
+\section*{1.2 Problématique}
+\addcontentsline{toc}{section}{1.2 Problématique}
+
+Les petits producteurs agricoles ruraux du Cameroun souffrent d'une triple vulnérabilité qui détruit leur rentabilité. En premier lieu, l'asymétrie d'information sur les prix : ignorant les cours réels pratiqués sur les marchés phares de Sandaga à Douala ou de Mfoundi à Yaoundé, ils se trouvent contraints de négocier dans une position de faiblesse face à des intermédiaires opportunistes qui captent l'essentiel de la valeur ajoutée. En deuxième lieu, les pertes post-récolte sont catastrophiques pour les cultures périssables telles que les tomates, les avocats, les bananes et les piments, dont la détérioration rapide force l'agriculteur à brader sa production en l'absence d'acheteur immédiat. En troisième lieu, le coût du transport individuel est prohibitif : un exploitant disposant seulement de quelques sacs de produits ne peut se permettre d'affréter un camion complet.
+
+À ces trois problèmes s'ajoute une dimension d'exclusion numérique partielle : une partie non négligeable de la population agricole rurale ne possède pas de smartphone ou ne bénéficie pas d'une couverture 4G stable, ce qui exclut d'emblée toute solution purement applicative.
+
+\begin{infobox}[Problématique centrale]
+\textit{« Comment concevoir une plateforme numérique qui connecte efficacement les bassins de production ruraux aux marchés urbains du Cameroun, tout en intégrant les contraintes d'infrastructure locale (réseau intermittent, exclusion smartphone) et en instaurant un mécanisme de confiance entre acteurs distants ? »}
+\end{infobox}
+
+\section*{1.3 Motivation}
+\addcontentsline{toc}{section}{1.3 Motivation}
+
+La motivation principale de ce projet est d'ordre social et économique. Ndjan-Soko ambitionne de renverser le rapport de force structurel qui pénalise depuis des décennies les petits producteurs agricoles camerounais. En leur donnant accès à une information de marché transparente, à un réseau logistique mutualisé et à un mécanisme de paiement sécurisé, la plateforme leur restitue le pouvoir de négociation qui leur fait actuellement défaut.
+
+D'un point de vue technologique, ce projet constitue également un défi d'ingénierie stimulant, mobilisant des compétences en développement mobile cross-platform, en conception d'API RESTful, en algorithmique d'optimisation logistique, en sécurité cryptographique des transactions financières et en intelligence artificielle embarquée.
+
+\section*{1.4 Objectifs}
+\addcontentsline{toc}{section}{1.4 Objectifs}
+
+\textbf{Objectif général :}
+
+Concevoir et développer une plateforme mobile d'agribusiness permettant aux agriculteurs camerounais de vendre leurs récoltes au juste prix, de les acheminer vers les marchés urbains à moindre coût grâce au groupage logistique, et de recevoir leur paiement de manière sécurisée.
+
+\textbf{Objectifs spécifiques :}
+
+\begin{itemize}
+  \item Implémenter un système d'authentification multi-rôle adapté au contexte rural (OTP SMS sans adresse e-mail).
+  \item Développer une bourse des prix agricoles en temps réel consultable hors connexion.
+  \item Créer une place de marché géolocalisée avec gestion du cycle de vie complet des annonces.
+  \item Concevoir un algorithme de groupage logistique basé sur la proximité géographique.
+  \item Intégrer un mécanisme de paiement sécurisé par escrow via MTN Mobile Money et Orange Money.
+  \item Assurer l'inclusion numérique via une interface USSD pour les téléphones basiques.
+\end{itemize}
+
+\section*{1.5 Plan du rapport}
+\addcontentsline{toc}{section}{1.5 Plan du rapport}
+
+Ce rapport est organisé en trois chapitres principaux. Le premier chapitre présente les concepts fondamentaux et l'état de l'art des solutions existantes dans le domaine de l'agri-tech en Afrique et dans le monde. Le deuxième chapitre expose la méthodologie adoptée, l'analyse des besoins, la conception de la solution et les choix architecturaux. Le troisième chapitre détaille l'implémentation technique, les choix technologiques justifiés et les résultats obtenus.
+
+% ══════════════════════════════════════════════════════════════════════════════
+\chapter{Concept et État de l'Art}
+% ══════════════════════════════════════════════════════════════════════════════
+
+\section{Concepts Fondamentaux}
+
+\subsection{L'Agri-Tech : définition et enjeux}
+
+L'agri-tech, contraction d'agriculture et de technologie, désigne l'ensemble des innovations numériques, robotiques et biotechnologiques appliquées à la chaîne de valeur agricole. Dans le contexte africain, l'agri-tech se focalise essentiellement sur des solutions à fort impact social, capables de fonctionner avec des contraintes d'infrastructure sévères : connectivité limitée, faible alphabétisation numérique et accès restreint aux services financiers formels.
+
+Ndjan-Soko s'inscrit dans le sous-domaine de l'agri-tech de mise en relation (\textit{marketplace agri}), qui vise à éliminer les intermédiaires parasitaires de la chaîne de distribution en connectant directement producteurs et acheteurs.
+
+\subsection{L'économie des plateformes multifaces}
+
+Une plateforme multifaces est un modèle économique qui crée de la valeur en facilitant les interactions entre plusieurs groupes d'utilisateurs distincts. Ndjan-Soko opère comme une plateforme à trois faces : les vendeurs (agriculteurs/GIC), les acheteurs (Bayam-Sellam, grossistes) et les transporteurs. La valeur de la plateforme augmente avec le nombre de participants de chaque côté, créant des effets de réseau croisés.
+
+\subsection{Le mécanisme d'escrow dans les transactions P2P}
+
+L'escrow, ou compte séquestre, est un dispositif juridique et financier où un tiers de confiance détient temporairement les fonds d'une transaction jusqu'à ce que toutes les conditions contractuelles soient remplies. Ce mécanisme est essentiel dans les transactions entre inconnus : l'acheteur paie en sachant que son argent est sécurisé, et le vendeur expédie en sachant que le paiement est garanti. Dans le contexte de Ndjan-Soko, ce mécanisme est critique car les acteurs de la transaction ne se connaissent pas et sont géographiquement séparés.
+
+\section{État de l'Art}
+
+\subsection{Solutions existantes en Afrique}
+
+Plusieurs initiatives agri-tech existent sur le continent africain, avec des degrés de succès variables. \textbf{Twiga Foods} au Kenya, fondée en 2014, est souvent citée comme référence : cette plateforme B2B connecte les agriculteurs kenyans aux épiciers urbains via une application mobile, avec une gestion logistique intégrée. En 2023, Twiga a traité plus de 10 000 tonnes de produits par mois. Son modèle repose sur des entrepôts centralisés (hubs) et une flotte de livraison propre, ce qui nécessite d'importants capitaux.
+
+\textbf{Esoko} au Ghana propose depuis 2005 des services d'information sur les prix agricoles via SMS, ciblant précisément la problématique de l'asymétrie informationnelle. Son modèle d'abonnement pour les agriculteurs a prouvé l'appétit des producteurs africains pour ce type de service. \textbf{Hello Tractor} en Afrique de l'Ouest permet le partage de tracteurs entre agriculteurs via une application mobile, appliquant le principe du « covoiturage » au matériel agricole — un concept proche de celui du groupage de fret de Ndjan-Soko.
+
+Au Cameroun spécifiquement, les initiatives numériques agricoles restent embryonnaires. Le projet AgriConnect financé par le MINADER propose un annuaire en ligne des coopératives, mais sans fonctionnalité transactionnelle ni logistique intégrée. L'absence d'une solution locale complète et contextuelle justifie pleinement la création de Ndjan-Soko.
+
+\subsection{Solutions mondiales de référence}
+
+À l'échelle mondiale, Amazon Fresh et Alibaba's Rural Taobao représentent les modèles les plus avancés de marketplace agri-alimentaire. Leur sophistication technologique et logistique est cependant inadaptée au contexte africain. Plus pertinent est le modèle de Mercado Libre en Amérique Latine, qui a su adapter son système d'escrow (MercadoPago) aux réalités des marchés émergents, avec une forte pénétration Mobile Money.
+
+\subsection{Technologies mobiles pour les marchés émergents}
+
+Le choix de React Native pour le développement cross-platform s'inscrit dans une tendance de fond : selon le rapport State of JS 2024, React Native est le framework mobile le plus utilisé pour les applications des marchés émergents. Sa capacité à produire une application unique fonctionnant sur Android et iOS réduit drastiquement les coûts de développement et de maintenance. La décision d'intégrer TensorFlow Lite pour l'analyse qualitative des récoltes répond à une tendance de l'Edge AI : déployer des modèles d'intelligence artificielle directement sur l'appareil mobile, sans dépendance réseau.
+
+\section{Bilan}
+
+L'analyse de l'état de l'art révèle que si des solutions partielles existent (information sur les prix, place de marché, logistique), aucune ne propose une intégration complète des quatre dimensions critiques dans un contexte de marché émergent à faible connectivité : \textbf{information de marché + place de marché géolocalisée + groupage logistique + paiement sécurisé + inclusion USSD}. Ndjan-Soko se positionne sur ce blanc technologique avec une architecture spécifiquement pensée pour les contraintes camerounaises.
+
+\begin{table}[H]
+\centering
+\caption{Analyse comparative des solutions agri-tech existantes}
+\begin{tabularx}{\textwidth}{L{3.2cm} C{2.1cm} C{2.1cm} C{2.2cm} C{2.3cm} C{1.5cm}}
+\toprule
+\textbf{Solution} & \textbf{Prix temps réel} & \textbf{Place de marché} & \textbf{Logistique groupée} & \textbf{Escrow Mobile Money} & \textbf{USSD} \\
+\midrule
+Twiga Foods (Kenya) & Non & Oui & Oui & Non & Non \\
+Esoko (Ghana) & Oui (SMS) & Non & Non & Non & Oui \\
+AgriConnect (Cameroun) & Non & Annuaire & Non & Non & Non \\
+\textbf{Ndjan-Soko} & \textbf{Oui} & \textbf{Oui} & \textbf{Oui} & \textbf{Oui} & \textbf{Oui} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+% ══════════════════════════════════════════════════════════════════════════════
+\chapter{Méthodologie}
+% ══════════════════════════════════════════════════════════════════════════════
+
+\section{Analyse des Besoins}
+
+\subsection{Besoins Fonctionnels}
+
+L'analyse des besoins a été conduite en confrontant les problématiques identifiées sur le terrain aux fonctionnalités nécessaires pour y répondre. Six modules fonctionnels interdépendants ont été identifiés :
+
+\paragraph{Module 1 : Authentification et Gestion Multi-Rôle}
+
+La plateforme doit permettre l'inscription et la connexion de trois types d'acteurs (agriculteurs/vendeurs, acheteurs, transporteurs) via leur numéro de téléphone, seul identifiant universel en milieu rural camerounais. Le système doit générer un code OTP à 6 chiffres par SMS pour valider l'identité sans recours à une adresse e-mail. Pour les transporteurs, un processus de vérification documentaire (KYC) est obligatoire avec upload du permis de conduire et de la carte grise, suivi d'une validation humaine sous 48 heures.
+
+\paragraph{Module 2 : Bourse des Prix Agricoles}
+
+Le système doit afficher les prix moyens des denrées agricoles par catégorie (légumes, fruits, tubercules, céréales) sur les marchés de Douala et Yaoundé, avec une mise à jour toutes les 6 heures lorsque le réseau est disponible. En mode hors connexion, la dernière version mémorisée localement doit être accessible avec indication claire de la date de fraîcheur.
+
+\paragraph{Module 3 : Place de Marché et Annonces}
+
+L'agriculteur doit pouvoir créer une annonce de récolte (denrée, quantité, prix, date, localisation GPS) même sans connexion internet, grâce à un mécanisme de cache local avec synchronisation automatique au retour du réseau. Un scanner de qualité basé sur l'IA embarquée (TensorFlow Lite) doit analyser une photo de la récolte et retourner une évaluation (grade A/B/C) et un prix suggéré.
+
+\paragraph{Module 4 : Moteur Logistique de Groupage}
+
+Le système doit détecter les agriculteurs situés dans un rayon de 15~km ayant des dates de récolte convergentes, regrouper leurs cargaisons en un lot unique, et générer une feuille de route optimisée pour le transporteur. Les frais logistiques doivent être répartis au prorata du volume de chaque producteur.
+
+\paragraph{Module 5 : Paiement Sécurisé et Escrow}
+
+L'acheteur doit pouvoir régler une commande via MTN Mobile Money ou Orange Money. Les fonds doivent être gelés sur un compte séquestre jusqu'à la confirmation de réception par l'acheteur, puis automatiquement distribués entre le vendeur (96~\%), le transporteur et la plateforme (commission 4~\%).
+
+\paragraph{Module 6 : Passerelle USSD}
+
+Un agriculteur sans smartphone doit pouvoir publier une annonce de récolte et consulter les prix du marché via un code USSD (\texttt{*123\#} par exemple), en interagissant avec des menus textuels numérotés.
+
+\subsection{Besoins Non-Fonctionnels}
+
+\begin{itemize}
+  \item \textbf{Performance :} Temps de réponse des API REST inférieur à 500~ms pour les opérations courantes.
+  \item \textbf{Disponibilité :} Taux de disponibilité cible de 99,5~\% pour le backend hébergé sur VPS.
+  \item \textbf{Sécurité :} Toutes les communications réseau chiffrées via HTTPS/TLS 1.3~; mots de passe hashés BCrypt~; registre cryptographique SHA-256 pour les transactions financières.
+  \item \textbf{Scalabilité :} Architecture REST stateless permettant un déploiement horizontal.
+  \item \textbf{Accessibilité :} Interface mobile optimisée pour des appareils Android d'entrée de gamme (RAM $\geq$ 2~Go).
+  \item \textbf{Conformité réglementaire :} Respect des règles COBAC pour la gestion des fonds séquestrés~; protection des données personnelles compatible RGPD.
+\end{itemize}
+
+\section{Conception de la Solution}
+
+\subsection{Modèle de données}
+
+Le schéma relationnel de la base de données a été conçu autour de 8 tables principales interconnectées par des relations strictement typées. La table centrale est \texttt{users}, qui stocke les profils de tous les acteurs avec leurs rôles (\texttt{VENDEUR}, \texttt{ACHETEUR}, \texttt{TRANSPORTEUR}, \texttt{HUB}, \texttt{ADMIN}) et leur statut (\texttt{PENDING}, \texttt{ACTIVE}, \texttt{SUSPENDED}). Les annonces de récoltes sont stockées dans \texttt{announcements} avec un champ géospatial \texttt{location\_gps} de type \texttt{POINT} (PostGIS) pour les calculs de groupage.
+
+La table \texttt{transactions} intègre le mécanisme de registre SHA-256 anti-fraude : chaque ligne stocke le hash de la ligne précédente (champ \texttt{previous\_hash}), créant une chaîne cryptographique inviolable. La table \texttt{disputes} gère les litiges avec un SLA de résolution de 72 heures maximum.
+
+\begin{table}[H]
+\centering
+\caption{Schéma relationnel de la base de données Ndjan-Soko}
+\begin{tabularx}{\textwidth}{L{2.8cm} L{5cm} X}
+\toprule
+\textbf{Table} & \textbf{Champs principaux} & \textbf{Relations et contraintes} \\
+\midrule
+\textbf{users} & id, phone (UNIQUE), name, role (ENUM), status, rating\_avg & Rôle : VENDEUR \textbar{} ACHETEUR \textbar{} TRANSPORTEUR \textbar{} HUB \textbar{} ADMIN \\
+\textbf{announcements} & id, vendor\_id (FK), product\_type, quantity, location\_gps (POINT), status & ManyToOne $\to$ users ; index géospatial PostGIS \\
+\textbf{orders} & id, announcement\_id, buyer\_id, trip\_id, total\_amount, step\_status & ManyToOne $\to$ announcements, users, trips \\
+\textbf{trips} & id, driver\_id, capacity\_total, capacity\_used, path\_hubs (JSON), status & ManyToOne $\to$ users ; OneToMany $\to$ orders \\
+\textbf{transactions} & id, order\_id, amount, type, from\_user\_id, previous\_hash (SHA-256) & Registre cryptographique chaîné anti-fraude \\
+\textbf{ratings} & id, order\_id, reviewer\_id, reviewed\_id, score (1-5) & Notation bidirectionnelle ; UNIQUE (order\_id, reviewer\_id) \\
+\textbf{disputes} & id, order\_id, opened\_by, reason, status, resolved\_at & SLA : 72h max ; statuts OUVERT \textbar{} EN\_ARBITRAGE \textbar{} RÉSOLU \\
+\textbf{price\_index} & id, product\_type, market\_name, avg\_price, valid\_date & Mise à jour 6h ; index sur (product\_type, valid\_date) \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Algorithme de groupage logistique}
+
+L'algorithme de groupage constitue le cerveau innovant de la plateforme. Son fonctionnement repose sur une contrainte de capacité formalisée mathématiquement. Soit un ensemble d'offres de récoltes $O_i$ situées dans un rayon $R \leq 15$ km appartenant à un même bassin de production. Le backend regroupe ces offres tant que la somme de leurs volumes individuels ne dépasse pas la capacité maximale $V_{max}$ du véhicule de fret :
+
+\begin{equation}
+\sum_{i=1}^{n} \text{Volume}(O_i) \leq V_{max}, \quad \text{avec} \quad \text{Rayon}(O_i, \text{Hub}) \leq 15 \text{ km}
+\end{equation}
+
+Pour l'optimisation des tournées multi-arrêts, deux approches sont envisagées. Pour le MVP, une approximation géospatiale via PostGIS est suffisante (heuristique du voisin le plus proche). Pour la version production, l'intégration de Google OR-Tools permet de résoudre formellement le problème de tournées de véhicules (\textbf{VRP : Vehicle Routing Problem}) en tenant compte des contraintes temporelles (dates de récolte, durée de conservation).
+
+\section{Architecture Technique}
+
+L'architecture de Ndjan-Soko repose sur un découplage strict entre le client mobile (frontend) et le serveur de traitement (backend), communiquant exclusivement via des APIs REST sécurisées.
+
+Le frontend React Native avec Expo CLI produit une application unique fonctionnant sur Android et iOS. Il intègre un cache SQLite local (WatermelonDB) pour le mode offline-first, une bibliothèque \texttt{react-native-fast-tflite} pour l'IA embarquée, et le module \texttt{@react-native-community/netinfo} pour la synchronisation automatique au retour du réseau.
+
+Le backend Spring Boot 3.x expose des endpoints REST sécurisés par JWT. Il est architecturé en couches distinctes : \textbf{contrôleurs REST $\to$ services métier $\to$ repositories JPA $\to$ base PostgreSQL avec extension PostGIS}. Les transactions financières sont protégées par un registre SHA-256 chaîné. L'intégration Mobile Money est réalisée via les passerelles Campay ou Monetbil, qui fournissent des SDK pour MTN MoMo et Orange Money.
+
+\begin{table}[H]
+\centering
+\caption{Infrastructure et choix technologiques de la plateforme}
+\begin{tabularx}{\textwidth}{L{3.5cm} L{5cm} X}
+\toprule
+\textbf{Composant} & \textbf{Technologie} & \textbf{Rôle} \\
+\midrule
+Frontend mobile & React Native + Expo CLI & App Android \& iOS (base de code unique) \\
+Backend API & Spring Boot 3.x (Java) & Logique métier, endpoints REST, sécurité \\
+Base de données & PostgreSQL + PostGIS & Stockage ACID + calculs géospatiaux \\
+Authentification & Spring Security + JWT & OTP SMS via Firebase Auth + rôles \\
+Cache offline & Expo SQLite / WatermelonDB & Annonces et prix en mode déconnecté \\
+IA embarquée & TensorFlow Lite (.tflite) & Analyse qualité récoltes sans réseau \\
+Paiement & Campay / Monetbil API & MTN MoMo \& Orange Money \\
+Notifications push & Firebase Cloud Messaging & Alertes réservation, paiement, livraison \\
+Hébergement & VPS Linux (OVH / AWS) & Déploiement backend + BDD \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Bilan}
+
+La méthodologie adoptée combine une approche d'analyse des besoins centrée sur les utilisateurs avec une conception architecturale rigoureuse adaptée aux contraintes locales. Le choix d'une architecture REST découplée garantit la maintenabilité et l'évolutivité du système. L'approche offline-first est non négociable dans le contexte rural camerounais et a guidé l'ensemble des décisions de conception côté frontend.
+
+Douze points critiques ont été identifiés lors de l'analyse comparative entre la version initiale du cahier des charges (v1.0) et la version révisée (v2.0). Parmi eux, trois sont bloquants avant tout développement : la conformité réglementaire de l'escrow (COBAC), la définition de la source des données de la bourse des prix, et la création du module de gestion des litiges.
+
+% ══════════════════════════════════════════════════════════════════════════════
+\chapter{Implémentation}
+% ══════════════════════════════════════════════════════════════════════════════
+
+\section{Choix Technologiques Justifiés}
+
+\subsection{React Native avec Expo CLI — Frontend}
+
+Le choix de React Native adossé à l'écosystème Expo CLI pour le développement du frontend mobile est motivé par plusieurs facteurs déterminants. Premièrement, la base de code unique en JavaScript/TypeScript permet un déploiement simultané sur Android et iOS avec un seul cycle de développement, ce qui réduit significativement les délais et les coûts de maintenance dans un contexte de ressources limitées. Deuxièmement, Expo offre un accès simplifié aux modules natifs critiques pour ce projet : \texttt{expo-location} pour la géolocalisation GPS, \texttt{expo-camera} pour la capture photo des récoltes, et \texttt{expo-sqlite} pour le cache offline.
+
+L'intégration de WatermelonDB comme solution de cache local est préférée à AsyncStorage pour les besoins de performance : WatermelonDB est une base de données reactive optimisée pour le mobile, capable de gérer plusieurs milliers d'entrées avec des requêtes complexes sans bloquer le thread principal. La bibliothèque \texttt{@react-native-community/netinfo} surveille en continu l'état de la connexion réseau et déclenche la synchronisation automatique des données offline dès le retour de la 4G.
+
+\subsection{Spring Boot 3.x avec PostgreSQL — Backend}
+
+Spring Boot 3.x a été retenu pour le backend en raison de sa maturité, de son écosystème riche et de sa robustesse éprouvée pour les applications d'entreprise. L'utilisation de Spring Security couplé aux JSON Web Tokens (JWT) garantit une authentification stateless compatible avec une architecture REST scalable. Les tokens d'accès ont une durée de vie de 1 heure, complétés par des refresh tokens valides 30 jours.
+
+L'extension PostGIS pour PostgreSQL est indispensable pour les calculs géospatiaux du moteur de groupage. Elle permet de stocker les coordonnées GPS des agriculteurs dans des champs de type \texttt{POINT} et d'exécuter des requêtes de proximité via la fonction \texttt{ST\_DWithin}, calculant efficacement tous les agriculteurs situés dans un rayon de 15~km autour d'un point donné.
+
+\subsection{Sécurité des Transactions — Registre SHA-256}
+
+Le mécanisme anti-fraude repose sur un registre cryptographique inspiré de la blockchain. Chaque enregistrement de la table \texttt{transactions} stocke le hash SHA-256 calculé à partir des données de la transaction courante concatenées avec le hash de la transaction précédente (champ \texttt{previous\_hash}). Cette chaîne cryptographique rend toute modification rétrospective détectable instantanément : si un administrateur ou un attaquant modifie le montant d'une ancienne transaction, le hash calculé ne correspond plus au hash stocké dans la transaction suivante, brisant la chaîne et déclenchant une alerte de sécurité.
+
+\subsection{Intégration Mobile Money — Campay/Monetbil}
+
+L'intégration des paiements Mobile Money est réalisée via les passerelles Campay ou Monetbil, qui exposent des APIs REST unifiées pour MTN Mobile Money et Orange Money. Le processus de développement impose une phase de test obligatoire en sandbox avant toute mise en production, conformément aux exigences de certification des opérateurs. Le flux de paiement suit six étapes :
+
+\begin{enumerate}
+  \item Initiation par l'acheteur
+  \item Gel des fonds sur l'escrow
+  \item Confirmation de chargement
+  \item Transport
+  \item Validation de réception
+  \item Distribution automatique
+\end{enumerate}
+
+\section{Résultats et Livrables}
+
+\subsection{Planning de développement sur 9 semaines}
+
+Le planning initial prévu en 6 semaines s'est révélé insuffisant lors de l'analyse approfondie, notamment parce que l'intégration des APIs MTN MoMo et Orange Money (sandbox, tests, certification) nécessite à elle seule 2 semaines minimum. Le planning révisé sur 9 semaines est structuré comme suit :
+
+\begin{table}[H]
+\centering
+\caption{Planning de développement révisé sur 9 semaines}
+\begin{tabularx}{\textwidth}{C{2.2cm} L{3cm} L{5cm} L{3.5cm}}
+\toprule
+\textbf{Semaine(s)} & \textbf{Phase} & \textbf{Tâches principales} & \textbf{Livrables} \\
+\midrule
+\textbf{Sem. 0} & Préparation juridique & Consultation COBAC, définition source prix, validation architecture & Aval juridique escrow \\
+\textbf{Sem. 1-2} & Backend Core & Entités JPA, BDD, sécurité JWT & API Spring Boot opérationnelle \\
+\textbf{Sem. 3-4} & Endpoints REST & Contrôleurs, logique escrow, SHA-256, Postman & API testée et documentée \\
+\textbf{Sem. 5-6} & Frontend React Native & Navigation, écrans, cache SQLite, sync offline & App mobile fonctionnelle \\
+\textbf{Sem. 7-8} & IA + Mobile Money + USSD & TFLite, intégration MoMo sandbox, algorithme groupage & IA + paiements testés \\
+\textbf{Sem. 9} & Tests \& Déploiement & Tests end-to-end, JMeter, déploiement staging VPS & Application stable \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Modèle économique et stratégie de monétisation}
+
+Le modèle économique de Ndjan-Soko repose sur plusieurs sources de revenus complémentaires. La source principale est une commission transactionnelle de 4~\% prélevée automatiquement sur chaque transaction lors du déblocage de l'escrow. Ce taux est transparent et affiché explicitement à l'acheteur avant validation du paiement.
+
+Des sources secondaires complèteront le modèle en phase de croissance : abonnements Premium pour les acheteurs souhaitant des alertes de prix personnalisées et une priorisation de leurs commandes, publicité locale ciblée pour les acteurs agro-industriels (engrais, semences, équipements), et vente de données agrégées anonymisées aux institutions agricoles et bailleurs de fonds.
+
+La stratégie de croissance se déploie en trois phases :
+\begin{itemize}
+  \item \textbf{Phase 1 :} Lancement sur deux régions pilotes (Grand Ouest et Littoral) avec un objectif de 500 agriculteurs, 100 acheteurs et 50 transporteurs en 12 mois.
+  \item \textbf{Phase 2 :} Consolidation nationale et lancement des abonnements Premium (mois 13-24).
+  \item \textbf{Phase 3 :} Expansion dans les pays CEMAC voisins (Gabon, RCA, Congo) entre les mois 25 et 36.
+\end{itemize}
+
+\subsection{Analyse critique et recommandations}
+
+L'analyse comparative entre les versions 1.0 et 2.0 du cahier des charges a permis d'identifier 12 points d'amélioration classés par priorité.
+
+\begin{table}[H]
+\centering
+\caption{Synthèse des 12 recommandations prioritaires (v2.0)}
+\begin{tabularx}{\textwidth}{C{2.2cm} L{4.5cm} X}
+\toprule
+\textbf{Priorité} & \textbf{Point} & \textbf{Action requise} \\
+\midrule
+\textcolor{critred}{\textbf{CRITIQUE}} & Cadre réglementaire Escrow (COBAC) & Consulter un juriste CEMAC ; partenariat MTN/Orange recommandé \\
+\textcolor{critred}{\textbf{CRITIQUE}} & Source des données de la bourse & Définir : agents terrain, API MINADER ou crowdsourcing validé \\
+\textcolor{critred}{\textbf{CRITIQUE}} & Module de gestion des litiges & Créer statuts Litige\_Ouvert $\to$ En\_Arbitrage $\to$ Résolu ; SLA 72h \\
+\textcolor{warnorange}{\textbf{MAJEUR}} & Algorithme de routage VRP & Intégrer Google OR-Tools pour optimisation multi-arrêts \\
+\textcolor{warnorange}{\textbf{MAJEUR}} & KYC Transporteurs automatisé & Définir SLA 48h + OCR pré-validation documentaire \\
+\textcolor{warnorange}{\textbf{MAJEUR}} & Planning révisé & 9 semaines (Mobile Money seul = 2 semaines minimum) \\
+\textbf{IMPORTANT} & Système de notation & Activer les avis post-transaction (note 1-5 étoiles) \\
+\textbf{IMPORTANT} & Notifications push FCM & Intégrer Firebase Cloud Messaging pour alertes statuts \\
+\textbf{IMPORTANT} & Stratégie cache offline & Définir fréquence synchro et durée validité cache \\
+\textit{SOUHAITABLE} & Dashboard administrateur & Interface pilotage validations KYC et commissions \\
+\textit{SOUHAITABLE} & Politique de commission & Taux fixe 4~\% clairement affiché (anciennement 3-5~\%) \\
+\textit{SOUHAITABLE} & Accessibilité linguistique & Pictogrammes + langues locales (Duala, Bassa, Fulfulde) \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+% ══════════════════════════════════════════════════════════════════════════════
+\chapter{Spécifications Fonctionnelles}
+% ══════════════════════════════════════════════════════════════════════════════
+
+\section{Contexte, Enjeux et Objectifs du Projet}
+
+\subsection{Introduction et Genèse du Projet}
+
+L'agriculture constitue le moteur structurel de l'économie camerounaise, employant plus de 60~\% de la population active et contribuant significativement au PIB national. Pourtant, malgré ce potentiel, le secteur agropastoral reste prisonnier de dysfonctionnements structurels profonds qui pénalisent en premier lieu ses acteurs les plus vulnérables : les petits producteurs ruraux.
+
+La genèse du projet Ndjan-Soko « Le Pont du Marché » est née d'un constat empirique direct, effectué par notre équipe lors de déplacements dans les grands bassins de production du pays, notamment à Foumbot (Région de l'Ouest) et dans le Moungo (Région du Littoral). Sur le terrain, un paradoxe frappant structure le quotidien des campagnes : les grands centres urbains de Yaoundé et Douala souffrent d'une inflation croissante des produits vivriers, tandis que les zones de production étouffent sous le poids d'excédents non acheminés.
+
+Ce dysfonctionnement repose sur deux piliers critiques.
+
+\subsubsection{Le fléau des pertes post-récolte et l'asymétrie d'information}
+
+En l'absence de circuits logistiques structurés, les produits périssables subissent des taux de dégradation critiques avant d'atteindre les étals urbains. Les statistiques sectorielles estiment que 30~\% à 40~\% de la production de denrées sensibles pourrissent sur place, faute de débouchés immédiats.
+
+Pour le MVP, trois filières pilotes particulièrement vulnérables ont été ciblées :
+
+\begin{itemize}
+  \item \textbf{La tomate de Foumbot :} Pourrissement en moins de 72 heures, fluctuations de prix extrêmes.
+  \item \textbf{Le plantain du Moungo (Njombé) :} Difficultés massives d'évacuation en saison des pluies.
+  \item \textbf{Le manioc :} Manque total de visibilité sur les volumes disponibles à la transformation ou à la revente en gros.
+\end{itemize}
+
+Cette fragilité biologique est aggravée par une profonde asymétrie d'information. L'agriculteur rural ignore le cours réel des prix pratiqués sur les marchés de consommation de Douala (Marché Sandaga) ou de Yaoundé (Marché du Mfoundi / Mokolo), l'empêchant de toute négociation éclairée.
+
+\subsubsection{La dépendance face aux circuits informels}
+
+Le modèle commercial agropastoral camerounais repose sur une informalité subie. Sans outil de planification, les producteurs attendent passivement le passage des grossistes urbains — les « Bayam-Sellam » — qui imposent leurs conditions. Ce système génère trois dérives majeures :
+
+\begin{itemize}
+  \item \textbf{Dictature des prix :} Profitant de la peur du pourrissement, les intermédiaires imposent des prix d'achat souvent inférieurs aux coûts de production.
+  \item \textbf{Friction transactionnelle :} Les affaires reposent uniquement sur le bouche-à-oreille et des appels téléphoniques non structurés.
+  \item \textbf{Logistique fragmentée :} Les transporteurs interurbains effectuent régulièrement leurs trajets retour vers les métropoles à demi-vide, faute d'information sur les marchandises disponibles sur leur itinéraire.
+\end{itemize}
+
+\subsection{Objectifs Stratégiques et KPIs}
+
+\subsubsection{Objectifs de Performance Opérationnelle}
+
+\begin{itemize}
+  \item \textbf{Taux d'appariement logistique (Matching Rate) :} Atteindre 70~\% de mise en relation réussie entre les Lots de Groupage générés par l'algorithme et les trajets déclarés par les transporteurs.
+  \item \textbf{Latence de synchronisation hors-ligne :} La Sync Queue doit synchroniser les données vers le backend Spring Boot en moins de 5 secondes dès reconnexion à un réseau 3G/4G.
+  \item \textbf{Précision du modèle IA embarqué :} Obtenir un taux de précision minimal de 80~\% sur le modèle TensorFlow Lite pour la classification des états de maturité des tomates et plantains.
+\end{itemize}
+
+\subsubsection{Objectifs d'Ingénierie Logicielle}
+
+\begin{itemize}
+  \item \textbf{Disponibilité de la Gateway USSD :} 95~\% de traitement sans échec des requêtes textuelles simulées par le parseur backend.
+  \item \textbf{Intégrité de la chaîne financière :} 100~\% des tentatives de modification frauduleuse des montants en base de données interceptées et bloquées par rupture de la chaîne de hachage SHA-256.
+  \item \textbf{Fluidité de l'interface mobile :} Maintien d'un rendu stable à 60~FPS lors du défilement des catalogues (FlatList optimisées sous React Native).
+\end{itemize}
+
+\subsection{Périmètre du Projet MVP}
+
+\begin{table}[H]
+\centering
+\caption{Périmètre MVP — Fonctionnalités IN vs éléments simulés OUT}
+\begin{tabularx}{\textwidth}{X X}
+\toprule
+\textbf{Fonctionnalités en Périmètre (IN)} & \textbf{Éléments Simulés / Hors Périmètre (OUT)} \\
+\midrule
+\textbf{Module 1 :} Authentification : Interface OTP sous React Native avec routage strict par rôles (RBAC via Zustand). & Fournisseur SMS réel : le code OTP est intercepté dans les logs du serveur. \\
+\textbf{Module 2 :} Bourse \& Catalogue : Consultation des prix indexés des marchés urbains (TanStack Query v5). & Mise à jour automatique des cours : l'actualisation des prix se fait via formulaire d'administration. \\
+\textbf{Module 3 :} Mode Offline \& IA embarquée : Formulaire de récolte persistant (Zustand storage), Sync Queue et modèle TensorFlow Lite (.tflite) exécuté en local sans réseau. & Réentraînement de modèles : le modèle IA est pré-entraîné sur un dataset réduit. \\
+\textbf{Module 4 :} Moteur Logistique : Algorithme SQL/JPA regroupant les récoltes dans un rayon de 10 à 20~km. & Géolocalisation live des camions : les positions sont simulées par scripts d'injection de coordonnées GPS. \\
+\textbf{Module 5 :} Registre Cryptographique : Base transactionnelle chaînée par hachage SHA-256 et calcul automatique de la commission à 4~\%. & Passerelles bancaires réelles : les API MTN MoMo et Orange Money fonctionnent en environnement Sandbox local. \\
+\textbf{Module 6 :} Passerelle USSD : Parseur Spring Boot décodant les syntaxes de type \texttt{*123\#} et alimentant la base PostgreSQL. & Shortcode GSM opérateur : le canal USSD physique est simulé à 100~\% par une interface web dédiée. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Cartographie des Acteurs et Rôles (RBAC)}
+
+\subsection{Définition des 5 Rôles du Système}
+
+\begin{itemize}
+  \item \textbf{ROLE\_AGRICULTEUR :} Propriétaire exclusif de la récolte. Il détient le droit d'écrire, modifier ses prix et publier ses annonces de vente.
+  \item \textbf{ROLE\_ACHETEUR :} Client urbain (Bayam-Sellam, grossiste). Il consulte le catalogue, initie les transactions financières et valide la réception de la marchandise.
+  \item \textbf{ROLE\_TRANSPORTEUR :} Chauffeur logistique. Il déclare ses trajets, accepte des lots de groupage et accède aux données de livraison sous condition.
+  \item \textbf{ROLE\_GERANT\_HUB :} Opérateur de point de collecte. Il gère l'état physique du stock local et signale les alertes de dépréciation biologique des denrées.
+  \item \textbf{ROLE\_ADMIN :} Super-utilisateur du système. Il arbitre les litiges complexes et supervise la console de sécurité anti-fraude cryptographique (SHA-256 Ledger).
+\end{itemize}
+
+\subsection{Matrice d'Accès Technique}
+
+\begin{table}[H]
+\centering
+\caption{Matrice d'Accès Technique — Permissions REST/API par rôle}
+\scriptsize
+\begin{tabularx}{\textwidth}{L{3.5cm} C{1.9cm} C{1.9cm} C{1.9cm} C{2cm} C{2cm}}
+\toprule
+\textbf{Ressource / Endpoint} & \textbf{AGRICULTEUR} & \textbf{ACHETEUR} & \textbf{TRANSPORTEUR} & \textbf{GERANT\_HUB} & \textbf{ADMIN} \\
+\midrule
+/api/v1/auth/** & GET, PUT & GET, PUT & GET, PUT & GET, PUT & GET, PUT, DELETE \\
+/api/v1/bourse/** & GET & GET & GET & GET & GET, POST, PUT, DELETE \\
+/api/v1/harvests/** & GET, POST, PUT, DELETE & GET (Catalogue) & GET (Limité) & GET, PATCH (Alerte) & GET, PUT, DELETE \\
+/api/v1/trips/** & GET & GET & GET, POST, PUT, DELETE & GET & GET, PUT, DELETE \\
+/api/v1/groupage/** & GET (Mon statut) & GET (Statut lot) & GET, POST (Accepter) & GET, PUT, PATCH & GET, POST, PUT, DELETE \\
+/api/v1/escrow/** & GET (Mes gains) & GET, POST, PUT & GET (Ma course) & Aucune permission & GET, POST, PUT, DELETE \\
+/api/v1/admin/audit/** & Bloqué & Bloqué & Bloqué & Bloqué & GET, POST (Réparer) \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Règles de Gestion Métier}
+
+\begin{description}[leftmargin=0pt]
+  \item[\textbf{RG\_LOG\_01 — Seuil de viabilité du groupage :}] Un lot de groupage n'est proposé à un transporteur que si le volume agrégé des récoltes dépasse 80~\% de la capacité disponible déclarée. En dessous de ce seuil, le statut du lot reste \texttt{EN\_CALCUL}.
+
+  \item[\textbf{RG\_CAT\_03 — Souveraineté économique du producteur :}] Le prix d'une \texttt{HarvestAnnouncement} ne peut être modifié que par l'AGRICULTEUR propriétaire ou par l'ADMIN. Toute recommandation de baisse de prix doit faire l'objet d'une validation explicite de l'agriculteur avant application en base de données.
+
+  \item[\textbf{RG\_ESC\_01 — Calcul automatique de la commission :}] Commission plateforme = 4~\% $\times$ Montant total transaction. Part de l'agriculteur = Montant total $-$ Coût transport $-$ Commission. Part du transporteur = Coût transport déclaré à la création du lot de groupage.
+
+  \item[\textbf{RG\_ESC\_02 — Verrou de réservation temporaire :}] Durée = 5 minutes. Passé ce délai sans confirmation de paiement Mobile Money, la \texttt{HarvestAnnouncement} revient automatiquement au statut \texttt{PUBLIEE} et le verrou est libéré.
+
+  \item[\textbf{RG\_ESC\_04 — Pénalités d'annulation tardive :}] Si l'annulation intervient après l'état \texttt{ASSIGNE\_CAMION}, des frais de compensation de 15~\% du coût transport sont automatiquement prélevés sur le remboursement de l'acheteur.
+
+  \item[\textbf{RG\_SEC\_01 — Enchaînement SHA-256 :}]
+    \[\texttt{current\_row\_hash} = \text{SHA256}(\text{transaction\_id} \| \text{montant} \| \text{statut} \| \text{previous\_row\_hash})\]
+    En cas d'invalidité détectée lors d'un audit, toutes les API \texttt{/escrow/**} basculent en HTTP 503 dans un délai inférieur à 500~ms.
+\end{description}
+
+% ══════════════════════════════════════════════════════════════════════════════
+\chapter{Spécifications Techniques et Conception}
+% ══════════════════════════════════════════════════════════════════════════════
+
+\section{Architecture Générale du Système}
+
+L'architecture de Ndjan-Soko est intégralement découplée. Le frontend React Native communique exclusivement avec le backend via des appels HTTP/HTTPS sur une API RESTful Spring Boot. Aucune logique métier ne réside dans l'application mobile. L'ensemble des traitements critiques (calcul du groupage, hachage SHA-256, gestion du séquestre) est centralisé côté serveur.
+
+\section{Spécifications de la Solution Mobile}
+
+\subsection{Framework Core : React Native / Expo EAS}
+
+Le projet mobile est construit avec React Native via le SDK Expo, géré par le service de build cloud Expo Application Services (EAS). Ce choix garantit la génération d'un APK Android et d'un binaire iOS à partir d'une seule base de code JavaScript/TypeScript, sans nécessiter l'installation d'Android Studio ou de Xcode sur les postes des développeurs.
+
+\begin{itemize}
+  \item SDK Expo : version 51+
+  \item EAS CLI : version $\geq$ 9.0.0
+  \item Profil de build Preview (APK universel) pour la démonstration jury
+  \item Commande de build : \texttt{eas build --profile preview --platform android}
+\end{itemize}
+
+\subsection{Navigation \& Routage : React Navigation v6}
+
+La navigation adopte une architecture conditionnelle stricte pilotée par le rôle stocké dans le store Zustand. Au démarrage, le composant \texttt{AppNavigator} intercepte le JWT présent dans \texttt{expo-secure-store}, décode le rôle et monte le Stack Navigator correspondant. Un utilisateur avec \texttt{ROLE\_TRANSPORTEUR} ne peut jamais accéder aux routes du catalogue acheteur.
+
+\subsection{Gestion de l'état global : Zustand}
+
+Zustand remplace Redux pour la gestion de l'état global de l'application. Son API minimaliste réduit le boilerplate de 70~\% par rapport à Redux Toolkit. Les slices gérés incluent : l'état d'authentification (token JWT, rôle, profil utilisateur), la file d'attente de synchronisation offline (SyncQueue), et l'état temporaire des formulaires de récolte.
+
+\subsection{Data Fetching \& Cache : TanStack Query v5}
+
+TanStack Query gère l'ensemble des appels réseau vers l'API Spring Boot. Il fournit nativement la gestion du cache, la pagination infinie (\texttt{useInfiniteQuery} pour le catalogue), la retry strategy en cas d'échec réseau et la synchronisation en arrière-plan de la Sync Queue au retour de connectivité.
+
+\section{Spécifications du Backend (Spring Boot)}
+
+\subsection{Architecture Backend : En couches \& Pattern DTO}
+
+Le backend respecte une architecture en trois couches strictement séparées :
+
+\begin{itemize}
+  \item \textbf{Controller (@RestController) :} Reçoit les requêtes HTTP, valide les payloads via \texttt{@Valid} et délègue au Service. Ne contient aucune logique métier.
+  \item \textbf{Service (@Service) :} Contient l'intégralité de la logique métier (calcul SHA-256, algorithme de groupage, gestion du séquestre). Testable isolément via Mockito.
+  \item \textbf{Repository (@Repository) :} Hérite de \texttt{JpaRepository} et expose les méthodes de persistance. Les requêtes spatiales PostGIS sont déclarées via \texttt{@Query} avec la syntaxe JPQL native.
+\end{itemize}
+
+\subsection{Migrations de schéma : Flyway}
+
+Flyway gère le versionnage des migrations de schéma SQL. Chaque évolution de la base de données est formalisée dans un fichier de migration versionné :
+
+\begin{lstlisting}[language=SQL, caption={Exemples de fichiers de migration Flyway}]
+V1__init_schema.sql
+V2__add_postGIS_extension.sql
+V3__create_escrow_ledger.sql
+\end{lstlisting}
+
+Flyway s'exécute automatiquement au démarrage du JAR Spring Boot et garantit la cohérence du schéma entre les environnements de développement, de staging et de production.
+
+\section{Modélisation des Données}
+
+\subsection{Extrait du Modèle Physique des Données (MPD)}
+
+\begin{lstlisting}[language=SQL, caption={Tables principales — Modèle Physique PostgreSQL}]
+-- Table users
+id           UUID PRIMARY KEY,
+phone_number VARCHAR UNIQUE,
+role         ENUM('AGRICULTEUR','ACHETEUR','TRANSPORTEUR','HUB','ADMIN'),
+trust_score  DECIMAL,
+created_at   TIMESTAMP
+
+-- Table harvest_announcements
+id               UUID PRIMARY KEY,
+farmer_id        UUID REFERENCES users(id),
+product_type     VARCHAR,
+quantity_kg      DECIMAL,
+price_fcfa       DECIMAL,
+quality_category ENUM('A','B','C'),
+location         GEOMETRY(POINT, 4326),
+status           ENUM('PUBLIEE','RESERVEE','GROUPAGE_EN_COURS','LIVREE'),
+is_synced        BOOLEAN DEFAULT false
+
+-- Table escrow_transactions
+id               UUID PRIMARY KEY,
+buyer_id         UUID REFERENCES users(id),
+seller_id        UUID REFERENCES users(id),
+driver_id        UUID REFERENCES users(id),
+amount_total     DECIMAL,
+commission       DECIMAL,
+status           ENUM,
+previous_row_hash VARCHAR(64),
+current_row_hash  VARCHAR(64)
+
+-- Table transporter_trips
+id                   UUID PRIMARY KEY,
+driver_id            UUID REFERENCES users(id),
+origin               VARCHAR,
+destination          VARCHAR,
+departure_date       DATE,
+available_capacity_kg DECIMAL,
+route                GEOMETRY(LINESTRING, 4326)
+\end{lstlisting}
+
+\section{Stratégie Offline}
+
+La stratégie offline de Ndjan-Soko est composée de trois niveaux complémentaires :
+
+\begin{description}[leftmargin=0pt]
+  \item[\textbf{Niveau 1 — Détection réseau :}] Un listener global surveille en permanence l'état de la connexion. Lorsque \texttt{isConnected} passe à \texttt{false}, un indicateur global (bandeau orange) est affiché et les appels Axios sont interceptés avant d'être émis.
+
+  \item[\textbf{Niveau 2 — Persistance locale :}] Les annonces créées hors ligne sont persistées dans une base SQLite locale sur le smartphone, avec un flag \texttt{is\_synced = false}. Les données de la bourse des prix du dernier chargement réussi sont également mises en cache pour une consultation offline.
+
+  \item[\textbf{Niveau 3 — Sync Queue automatique :}] Dès que \texttt{isConnected} repasse à \texttt{true}, un job de synchronisation s'exécute en arrière-plan, transfère les enregistrements en attente vers l'API Spring Boot, met à jour les flags \texttt{is\_synced = true} et affiche un toast de confirmation discret.
+\end{description}
+
+\section{Stratégie de Déploiement}
+
+\subsection{Backend Spring Boot sur Railway — Dockerfile multi-stage}
+
+\begin{lstlisting}[language={}, caption={Dockerfile multi-stage pour Spring Boot}]
+# Etape 1 : Build du JAR de production
+FROM maven:3.8.5-openjdk-17 AS build
+WORKDIR /app
+COPY . .
+RUN mvn clean package -DskipTests
+
+# Etape 2 : Image d'execution epuree
+FROM openjdk:17-jdk-slim
+WORKDIR /app
+COPY --from=build /app/target/ndjan-soko-api-0.0.1-SNAPSHOT.jar app.jar
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "app.jar"]
+\end{lstlisting}
+
+\subsection{Compilation mobile via Expo EAS}
+
+\begin{lstlisting}[language={}, caption={Configuration eas.json}]
+{
+  "cli": { "version": ">= 9.0.0" },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal"
+    },
+    "preview": {
+      "distribution": "internal",
+      "android": { "buildType": "apk" }
+    },
+    "production": {
+      "nodeEnv": "production"
+    }
+  }
+}
+\end{lstlisting}
+
+Génération de l'APK Android pour la soutenance :
+\begin{lstlisting}[language={}]
+eas build --profile preview --platform android
+\end{lstlisting}
+
+% ══════════════════════════════════════════════════════════════════════════════
+\chapter{Exigences Non-Fonctionnelles}
+% ══════════════════════════════════════════════════════════════════════════════
+
+\section{Sécurité des Flux et des Données}
+
+\begin{description}[leftmargin=0pt]
+  \item[\textbf{ENF\_SEC\_01 — Chiffrement TLS 1.3 :}] L'intégralité des échanges entre l'application React Native et l'API Spring Boot doit être chiffrée via TLS 1.3 sur le port 443. Les suites cryptographiques obsolètes (TLS 1.0, TLS 1.1) doivent être explicitement désactivées côté serveur Railway.
+
+  \item[\textbf{ENF\_SEC\_02 — Architecture Stateless \& JWT :}] Aucune session n'est stockée en mémoire vive (\texttt{SessionCreationPolicy.STATELESS}). Access Token valide 15 minutes, Refresh Token 30 jours. Tout accès avec un token invalide renvoie HTTP 401.
+
+  \item[\textbf{ENF\_SEC\_03 — Politique CORS restrictive :}] Le backend refuse toute requête cross-origin ne provenant pas des origines explicitement autorisées. Les verbes HTTP autorisés sont strictement : GET, POST, PUT, PATCH, DELETE.
+
+  \item[\textbf{ENF\_SEC\_04 — Intégrité SHA-256 du Ledger :}] Toute écriture dans \texttt{escrow\_transactions} déclenche le calcul du hash chaîné. En cas de rupture, l'API financière bascule en 503 dans un délai inférieur à 500~ms.
+
+  \item[\textbf{ENF\_SEC\_05 — Protection des secrets :}] \texttt{JWT\_SECRET\_KEY}, \texttt{DB\_PASSWORD} et clés API Mobile Money exclusivement dans les variables d'environnement Railway et dans \texttt{expo-secure-store} (AES-256). Fichiers \texttt{.env} et \texttt{application.yml} de production dans le \texttt{.gitignore}.
+\end{description}
+
+\section{Performances et Optimisation Mobile}
+
+\begin{description}[leftmargin=0pt]
+  \item[\textbf{ENF\_PERF\_01 — 60 FPS :}] Toute liste dépassant 10 éléments utilise FlashList (Shopify) en remplacement de FlatList. Les composants de carte d'annonce sont mémoïsés via \texttt{React.memo}.
+
+  \item[\textbf{ENF\_PERF\_02 — Temps de chargement :}] Le premier bloc de données du catalogue doit être visible en moins de 1,5 seconde (pagination initiale à 15 enregistrements).
+
+  \item[\textbf{ENF\_PERF\_03 — Optimisation bande passante :}] Images converties au format WebP par le backend. Poids maximum d'une image dans un payload JSON : 80~Ko. Chargement infini via \texttt{useInfiniteQuery}.
+
+  \item[\textbf{ENF\_PERF\_04 — Résilience offline :}] Synchronisation SQLite $\to$ backend en moins de 5 secondes après retour connectivité. Aucun crash possible en mode avion.
+\end{description}
+
+\section{Matrice d'Analyse des Risques}
+
+\begin{table}[H]
+\centering
+\caption{Matrice des risques — Criticité = Impact $\times$ Probabilité}
+\begin{tabularx}{\textwidth}{L{2cm} L{3.5cm} C{1.2cm} C{1.2cm} C{2cm} X}
+\toprule
+\textbf{Nature} & \textbf{Menace} & \textbf{Impact} & \textbf{Prob.} & \textbf{Criticité} & \textbf{Mitigation} \\
+\midrule
+Technique & Zone blanche lors de la démo terrain & 5 & 4 & 20 — Critique & Mode offline SQLite + scénario de démo préparé hors ligne \\
+Technique & Panne Railway avant soutenance & 5 & 2 & 10 — Majeur & APK avec URL fallback Ngrok + Docker Compose local \\
+Technique & Échec build EAS la veille & 5 & 2 & 10 — Majeur & APK de secours archivé 48h avant + Expo Go en fallback \\
+Technique & Modification frauduleuse BDD & 5 & 2 & 10 — Majeur & SHA-256 Ledger + verrouillage 503 automatique (RG\_SEC\_01) \\
+Technique & Exposition JWT sur GitHub & 4 & 2 & 8 — Modéré & Variables d'environnement Railway + .gitignore + rotation clé \\
+Humain & Résistance des agriculteurs aux smartphones & 4 & 3 & 12 — Majeur & Canal USSD secondaire \texttt{*123\#} compatible feature phones \\
+Humain & Défaillance d'un membre de l'équipe & 4 & 2 & 8 — Modéré & Documentation GitHub + revues de code croisées obligatoires \\
+Organisationnel & Dérive Sprint 2 (PostGIS non livré) & 4 & 3 & 12 — Majeur & Périmètre MVP segmenté ; démo avec données pré-calculées si retard \\
+Organisationnel & Dégradation biologique au Hub & 3 & 3 & 9 — Modéré & Module d'alerte Hub (US\_07) avec notification push agriculteur \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Environnements et Industrialisation (DevOps)}
+
+\subsection{Stratégie de versionnage (GitFlow)}
+
+\begin{itemize}
+  \item \textbf{main :} Code de production stable, déclenche automatiquement le déploiement Railway. Aucun push direct autorisé.
+  \item \textbf{develop :} Branche d'intégration des fonctionnalités validées par revue de code.
+  \item \textbf{feature/nom-du-module :} Branches isolées par ticket backlog (ex : \texttt{feature/module-escrow-ledger}, \texttt{feature/offline-sync-queue}).
+\end{itemize}
+
+\subsection{Séparation des environnements}
+
+\begin{table}[H]
+\centering
+\caption{Matrice des environnements — Développement / Staging / Production}
+\begin{tabularx}{\textwidth}{L{3cm} L{4.5cm} L{4.5cm} X}
+\toprule
+\textbf{Environnement} & \textbf{Frontend} & \textbf{Backend} & \textbf{Base de données} \\
+\midrule
+Développement local & Expo Go (port 8081) & Spring Boot local (port 8080) & PostgreSQL via Docker Compose \\
+Staging / Recette & APK Preview via EAS Build & JAR déployé sur Railway (branche develop) & Instance PostgreSQL Railway isolée \\
+Production / Soutenance & APK stable via EAS Build & JAR déployé sur Railway (branche main) & Instance PostgreSQL Railway de production \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Configuration des secrets applicatifs}
+
+\begin{lstlisting}[language={}, caption={Backend Spring Boot — variables d'environnement Railway}]
+spring:
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+  application:
+    security:
+      jwt:
+        secret-key: ${JWT_SECRET_KEY}
+        access-token-expiration: 900000
+        refresh-token-expiration: 2592000000
+\end{lstlisting}
+
+\section{Ergonomie, Design (UI/UX) et Accessibilité}
+
+\subsection{Standards de design}
+
+\begin{itemize}
+  \item \textbf{Material Design 3 (Google)} pour les builds Android : système d'élévation, typographie Roboto, composants natifs (FAB, Bottom Navigation Bar, Snackbar).
+  \item \textbf{Human Interface Guidelines (Apple)} pour les builds iOS : navigation par onglets conforme, Safe Area respectée, retours haptiques sur les actions critiques.
+  \item \textbf{NativeWind} (Tailwind CSS v3) comme couche d'abstraction unifiée entre les deux plateformes.
+\end{itemize}
+
+\subsection{Accessibilité terrain}
+
+\begin{itemize}
+  \item Taille minimale des cibles tactiles : 48 $\times$ 48~dp sur tous les boutons d'action (WCAG 2.1).
+  \item Taille minimale de police : 16sp pour les libellés de formulaire, 14sp pour les textes secondaires.
+  \item Double codage des statuts : chaque état logistique combine une couleur et un libellé textuel pour le daltonisme.
+  \item Mode hors-ligne visuellement distinct : badge orange sur les éléments en attente de synchronisation.
+\end{itemize}
+
+\begin{table}[H]
+\centering
+\caption{Tableau de correspondance terminologique — Technique vs UI}
+\begin{tabularx}{\textwidth}{L{4cm} X X}
+\toprule
+\textbf{Terme technique} & \textbf{Libellé UI Français} & \textbf{Libellé UI Anglais} \\
+\midrule
+\texttt{BLOQUE\_SEQUESTRE} & Paiement sécurisé & Payment secured \\
+\texttt{GROUPAGE\_EN\_COURS} & Camion en route & Truck on the way \\
+\texttt{SYNCED = false} & En attente de réseau & Waiting for network \\
+\texttt{HUB\_ASSIGNED} & Déposé au point de collecte & Dropped at collection point \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+% ══════════════════════════════════════════════════════════════════════════════
+\chapter{Méthodologie, Planification et Budget}
+% ══════════════════════════════════════════════════════════════════════════════
+
+\section{Méthodologie de Gestion de Projet (Agile Scrum)}
+
+Le projet Ndjan-Soko est piloté selon le framework Agile Scrum. Le projet est découpé en 2 Sprints de 2 semaines pour une durée totale de 4 semaines (20 jours ouvrés). Chaque Sprint produit un incrément logiciel testable et déployable.
+
+\begin{itemize}
+  \item \textbf{Sprint 1 (Semaines 1-2) :} Fondations et noyau fonctionnel — authentification, mode offline, formulaire de récolte, Bourse des prix.
+  \item \textbf{Sprint 2 (Semaines 3-4) :} Intelligence logistique et sécurisation financière — moteur PostGIS, Ledger SHA-256, séquestre, module Hub.
+\end{itemize}
+
+\subsection{Définition of Done (DoD)}
+
+Une User Story est considérée \textit{Done} lorsque les cinq conditions suivantes sont réunies :
+
+\begin{enumerate}
+  \item Le code est mergé sur \texttt{develop} via Pull Request validée par au moins un autre membre.
+  \item Les tests unitaires (Jest + JUnit 5) passent à 100~\% sans régression.
+  \item Le scénario de recette fonctionnelle correspondant est marqué \textit{Validé} dans la Grille de Recette.
+  \item La fonctionnalité est déployée sur l'environnement de Staging (Railway branche develop).
+  \item La documentation technique associée (payload JSON, règle de gestion) est à jour sur GitHub.
+\end{enumerate}
+
+\section{Estimation Budgétaire}
+
+\begin{table}[H]
+\centering
+\caption{Estimation budgétaire — Ressources humaines}
+\begin{tabularx}{\textwidth}{X C{2.5cm} C{3cm} C{3cm}}
+\toprule
+\textbf{Rôle} & \textbf{Charge (J/H)} & \textbf{TJM (FCFA)} & \textbf{Coût Total (FCFA)} \\
+\midrule
+1 Product Owner / Scrum Master & 20 J/H & 120 000 & 2 400 000 \\
+2 Développeurs Backend (Spring Boot) & 40 J/H & 150 000 & 6 000 000 \\
+2 Développeurs Frontend (React Native) & 40 J/H & 150 000 & 6 000 000 \\
+\textbf{Total Force de Travail} & \textbf{100 J/H} & — & \textbf{14 400 000} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Estimation budgétaire — Infrastructure et licences}
+\begin{tabularx}{\textwidth}{X L{4cm} C{3cm}}
+\toprule
+\textbf{Poste de Dépense} & \textbf{Détail} & \textbf{Coût (FCFA)} \\
+\midrule
+Licence Google Play Console & Frais unique à vie (\$25 USD) & 16 500 \\
+Licence Apple Developer Program & Abonnement annuel (\$99 USD) & 65 000 \\
+Hébergement Cloud Railway + PostgreSQL & 1 mois de MVP & 20 000 \\
+Consommation SMS OTP & Forfait de test MVP & 50 000 \\
+\textbf{Total Infrastructure} & — & \textbf{151 500} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\begin{infobox}[Budget Global du MVP Ndjan-Soko]
+\textbf{BUDGET GLOBAL : 14 551 500 FCFA}\\[4pt]
+Note : En contexte académique, les coûts de main-d'œuvre sont nuls. Le budget réel engagé pour la soutenance se limite aux frais d'infrastructure : \textbf{151 500 FCFA}.
+\end{infobox}
+
+\section{Stratégie de Tests et Cahier de Recette}
+
+\subsection{Tests Unitaires : Jest + JUnit 5}
+
+\begin{itemize}
+  \item \textbf{Mobile (Jest + React Native Testing Library) :} Validation isolée des fonctions du store Zustand — conversion d'unités (kg $\to$ tonnes pour RG\_LOG\_01), filtrage d'état des annonces, gestion du cycle des tokens dans les interceptors Axios.
+  \item \textbf{Backend (JUnit 5 + Mockito) :} Tests d'isolation de la couche \texttt{@Service}. Les repositories sont simulés (\texttt{@Mock}) pour valider l'enchaînement cryptographique SHA-256 (RG\_SEC\_01), la formule de commission (RG\_ESC\_01) et les pénalités d'annulation (RG\_ESC\_04).
+\end{itemize}
+
+\subsection{Tests E2E : Maestro}
+
+L'équipe exploite Maestro pour automatiser les flux graphiques complets sur émulateur Android. Les scripts YAML reproduisent les gestes précis d'un utilisateur sur le terrain : saisie du numéro, saisie de l'OTP, remplissage du formulaire de récolte, déclenchement de la caméra IA, validation de publication et vérification du badge de statut résultant.
+
+\subsection{Grille de Recette Fonctionnelle}
+
+\begin{table}[H]
+\centering
+\caption{Grille de recette fonctionnelle — 8 scénarios critiques}
+\scriptsize
+\begin{tabularx}{\textwidth}{C{1cm} L{2.8cm} L{2.5cm} L{2.5cm} L{3cm} C{1.2cm}}
+\toprule
+\textbf{ID} & \textbf{Module / Scénario} & \textbf{Condition Initiale} & \textbf{Action} & \textbf{Résultat Attendu} & \textbf{Statut} \\
+\midrule
+TC\_01 & Auth \& Format Numéro & Écran Login ouvert & Saisie 0675... (format incorrect) & Rejet immédiat, message E.164 obligatoire (+237) & Validé \\
+TC\_02 & Routage Micro-Volume $\to$ Hub & Réseau actif, agriculteur connecté & Annonce de $\sim$50~kg de tomates & Récolte routée vers HUB\_STOCK + itinéraire Hub affiché & Validé \\
+TC\_03 & Verrou Réservation Temporaire & Acheteur sur fiche PUBLIEE & Clic « Acheter avec Mobile Money » & Statut RESERVE ; 2e acheteur simultané reçoit HTTP 409 & Validé \\
+TC\_04 & Interception Fraude SHA-256 & Chaîne SHA-256 intègre & Modification manuelle montant en BDD & API renvoie 503, soldes gelés, Écran 16 affiché & Validé \\
+TC\_05 & Résilience Offline & Mode Avion activé & Agriculteur valide une récolte & Annonce persistée SQLite, badge orange, aucun crash & Validé \\
+TC\_06 & Seuil Groupage RG\_LOG\_01 & Transporteur 5 tonnes déclarées & Lot couvrant 60~\% capacité & Lot non proposé ; statut EN\_CALCUL maintenu & Validé \\
+TC\_07 & RBAC BR\_RBAC\_01 & Transporteur authentifié, tx EN\_ATTENTE & GET /escrow/\{id\}/buyer-contact & HTTP 403 Forbidden & Validé \\
+TC\_08 & Souveraineté Producteur RG\_CAT\_03 & Récolte au Hub, alerte dégradation & Gérant clique « Recommander -10~\% » & Notif push 3 options ; prix en BDD inchangé & Validé \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Jalons et Livrables Finaux}
+
+\textbf{Jalons clés :}
+\begin{itemize}
+  \item \textbf{Jalon 1 (T0 + 12j) :} Sprint 1 achevé — authentification OTP, Bourse des prix, formulaire de récolte, mode offline SQLite opérationnels.
+  \item \textbf{Jalon 2 (T0 + 26j) :} Sprint 2 achevé — moteur logistique PostGIS, Ledger SHA-256, séquestre financier et module Hub livrés. Code source gelé.
+  \item \textbf{Jalon 3 (T0 + 30j) :} Livraison finale — recette E2E validée, APK Android déployé via EAS, API live sur Railway.
+\end{itemize}
+
+\textbf{Livrables finaux attendus :}
+\begin{enumerate}
+  \item Code Source Backend : Projet Java Spring Boot structuré en couches, hébergé sur GitHub privé, incluant les migrations Flyway PostgreSQL/PostGIS et la suite de tests JUnit 5.
+  \item Code Source Frontend Mobile : Projet React Native (Expo SDK) configuré pour l'automatisation EAS, incluant les scripts Maestro et la collection Postman.
+  \item L'Artefact Mobile Déployé (.apk) : Binaire Android universel compilé en profil Preview EAS, installable instantanément via QR code.
+  \item L'Infrastructure Serveur Live : API cloud active sur Railway avec certificat SSL/TLS, adossée à une instance PostgreSQL/PostGIS persistante sur \url{https://api.ndjan-soko.cm}.
+  \item La Documentation OpenAPI : Spécification générée dynamiquement par SpringDoc, accessible via la console Swagger UI.
+  \item Ce Cahier des Charges Final : Document de référence contractuelle de l'écosystème Ndjan-Soko.
+\end{enumerate}
+
+% ══════════════════════════════════════════════════════════════════════════════
+%  CONCLUSION
+% ══════════════════════════════════════════════════════════════════════════════
+\chapter*{Conclusion}
+\addcontentsline{toc}{chapter}{Conclusion}
+
+Ndjan-Soko est un projet d'agri-tech ambitieux et ancré dans une réalité terrain précise. Ce rapport a démontré la pertinence de la solution proposée au regard des défis structurels qui pèsent sur la chaîne de valeur agricole camerounaise. En combinant une place de marché géolocalisée, un moteur logistique de groupage, une bourse des prix en temps réel et un système de paiement sécurisé par escrow, la plateforme répond simultanément aux quatre douleurs principales des agriculteurs : asymétrie d'information, pertes post-récolte, coût logistique prohibitif et exclusion numérique.
+
+L'analyse critique conduite dans le cadre de la révision vers la version 2.0 a permis d'élever significativement le niveau de maturité du projet. Les 12 recommandations identifiées, dont 3 critiques bloquantes, ont été intégrées dans un plan d'action structuré. Le planning de développement révisé sur 9 semaines reflète une estimation réaliste tenant compte des délais incompressibles liés à la certification Mobile Money et à la conformité réglementaire COBAC.
+
+Sur le plan technologique, les choix effectués — React Native pour le cross-platform mobile, Spring Boot pour la robustesse backend, PostgreSQL/PostGIS pour les calculs géospatiaux, TensorFlow Lite pour l'IA embarquée et le registre SHA-256 pour la sécurité des transactions — constituent un ensemble cohérent, éprouvé et adapté aux contraintes d'infrastructure de l'Afrique Centrale.
+
+En perspective, Ndjan-Soko ambitionne de devenir la référence de l'agri-tech en Afrique Centrale. La vision long terme est claire : être le pont numérique qui permet à chaque agriculteur camerounais de vendre sa récolte au juste prix, avant même qu'elle ne quitte le champ, avec la certitude d'être payé, grâce à un transport optimisé et des transactions cryptographiquement sécurisées.
+
+% ══════════════════════════════════════════════════════════════════════════════
+%  BIBLIOGRAPHIE
+% ══════════════════════════════════════════════════════════════════════════════
+\chapter*{Bibliographie et Références}
+\addcontentsline{toc}{chapter}{Bibliographie et Références}
+
+\section*{Documents sources du projet}
+
+\begin{enumerate}[label={[\arabic*]}]
+  \item EPOLE, Roland. \textit{Cahier des Charges Ndjan-Soko — Version 1.0.0 (Complet)}. Keyce IA, Mai 2026.
+  \item EPOLE, Roland. \textit{Cahier des Charges \& Rapport Technique Complet Ndjan-Soko — Version 2.0 Édition Avancée}. Keyce IA, Mai 2026.
+\end{enumerate}
+
+\section*{Références technologiques}
+
+\begin{enumerate}[label={[\arabic*]}, start=3]
+  \item React Native Documentation. Meta Platforms Inc. \url{https://reactnative.dev/docs/getting-started}
+  \item Spring Boot 3.x Reference Documentation. VMware Inc. \url{https://docs.spring.io/spring-boot/docs/current/reference/html/}
+  \item PostgreSQL 15 Documentation with PostGIS 3.3. \url{https://postgis.net/documentation/}
+  \item TensorFlow Lite — Inference on Mobile \& Edge Devices. Google LLC. \url{https://www.tensorflow.org/lite}
+  \item Firebase Authentication Documentation. Google LLC. \url{https://firebase.google.com/docs/auth}
+\end{enumerate}
+
+\section*{Références contextuelles}
+
+\begin{enumerate}[label={[\arabic*]}, start=8]
+  \item FAO. 2019. \textit{The State of Food and Agriculture — Moving Forward on Food Loss and Waste Reduction}. Rome.
+  \item GSMA Intelligence. 2024. \textit{The Mobile Economy Sub-Saharan Africa 2024}. Londres.
+  \item Banque Mondiale. 2022. \textit{Agriculture, forestry, and fishing — value added (\% of GDP) — Cameroon}. World Development Indicators.
+  \item COBAC. \textit{Règlementation des établissements de paiement dans la zone CEMAC}. Douala, 2020.
+\end{enumerate}
+
+\section*{Solutions de référence citées}
+
+\begin{enumerate}[label={[\arabic*]}, start=12]
+  \item Twiga Foods Ltd. \textit{Business Model Analysis}. Nairobi, Kenya. \url{https://twigafoods.com}
+  \item Esoko Ltd. \textit{Agricultural Information Services Platform}. Accra, Ghana. \url{https://esoko.com}
+\end{enumerate}
+
+% ══════════════════════════════════════════════════════════════════════════════
+%  ANNEXES
+% ══════════════════════════════════════════════════════════════════════════════
+\appendix
+
+\chapter{Prototype Interactif Figma}
+
+Lien vers le prototype interactif haute-fidélité des 16 écrans de l'application Ndjan-Soko (parcours Agriculteur, Acheteur, Transporteur, Gérant Hub) :
+
+\textit{[Insérer ici le lien Figma une fois le prototype créé]}
+
+Le prototype illustre l'intégralité des wireflows définis en Section~\ref{}, incluant les transitions d'écrans conditionnelles par rôle, les états de l'interface en mode offline (badge orange) et les écrans d'alerte de sécurité (Module 5 — Fraude détectée).
+
+\chapter{Documentation API Swagger / SpringDoc}
+
+Une fois le backend Spring Boot déployé sur Railway, la documentation interactive OpenAPI 3.0 est accessible à l'URL suivante :
+
+\url{https://api.ndjan-soko.cm/swagger-ui.html}
+
+Cette console Swagger UI permet de tester interactivement chaque endpoint REST de l'API, visualiser les schémas de requêtes et réponses JSON, et vérifier les contraintes de sécurité (\texttt{@PreAuthorize}) pour chaque rôle RBAC.
+
+\chapter{Script PlantUML — Diagramme de Gantt}
+
+\begin{lstlisting}[language={},caption={Script PlantUML — Planification Gantt 4 semaines}]
+@startgantt
+title PLANIFICATION GANTT -- ECOSYSTEME NDJAN-SOKO (4 SEMAINES)
+dateFormat YYYY-MM-DD
+Project starts 2026-06-01
+-- Sprint 1 : Fondations et Noyau Fonctionnel --
+[Initialisation Architecture & Docker] lasts 3 days
+then [US_01 : Auth OTP & Spring Security] lasts 4 days
+then [US_04 & US_05 : Formulaire, Camera & SQLite Offline] lasts 5 days
+[JALON 1 : Core App Fonctionnel] happens at [US_04 & US_05]'s end
+-- Sprint 2 : Intelligence Logistique et Securisation --
+then [US_02 : Catalogue Urbain & Reservation Temporaire] lasts 4 days
+then [US_06 : Moteur Logistique & Requetes Spatiales PostGIS] lasts 5 days
+then [US_03 & US_08 : Ledger SHA-256 & Sequestre Financier] lasts 5 days
+then [US_07 : Module Gerant de Hub & Alertes Push] lasts 3 days
+[JALON 2 : Cloture du Code Source] happens at [US_07]'s end
+-- Phase Finale : Recette et Deploiement --
+then [Campagne de Tests E2E Maestro & Postman] lasts 3 days
+then [Deploiement Production Railway & EAS Build] lasts 2 days
+[JALON 3 : Livraison Finale] happens at [...]'s end
+@endgantt
+\end{lstlisting}
+
+\chapter{Glossaire Technique Complet}
+
+\begin{longtable}{L{3cm} X}
+\toprule
+\textbf{Terme / Acronyme} & \textbf{Définition} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Terme / Acronyme} & \textbf{Définition} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+RBAC & Role-Based Access Control — contrôle d'accès basé sur les rôles \\
+JWT & JSON Web Token — jeton d'authentification stateless signé par le serveur \\
+TFLite & TensorFlow Lite — format de modèle IA allégé pour exécution mobile sans GPU \\
+PostGIS & Extension PostgreSQL ajoutant le support des types et fonctions géographiques (\texttt{ST\_DWithin}, \texttt{ST\_Distance}) \\
+EAS & Expo Application Services — service cloud de compilation et distribution d'APK/IPA \\
+SHA-256 & Secure Hash Algorithm 256 bits — algorithme de hachage cryptographique unidirectionnel \\
+Escrow & Compte séquestre — mécanisme de blocage de fonds géré par un tiers de confiance jusqu'à validation de livraison \\
+Bayam-Sellam & Terme camerounais désignant les commerçantes intermédiaires qui achètent aux producteurs pour revendre sur les marchés urbains \\
+GIC & Groupement d'Intérêt Commun — coopérative agricole informelle camerounaise \\
+OTP & One-Time Password — code à usage unique envoyé par SMS pour l'authentification \\
+DTO & Data Transfer Object — objet de transfert découplant l'entité JPA de la réponse HTTP \\
+Flyway & Outil de migration de schéma SQL versionné, exécuté automatiquement au démarrage du JAR Spring Boot \\
+\end{longtable}
+
+\end{document}
